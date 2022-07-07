@@ -26,6 +26,16 @@
                     "description":  "将反汇编风格设置为 AT&T",
                     "text": "-gdb-set disassembly-flavor att",
                     "ignoreFailures": true
+                },
+                {
+                    "description": "使 GDB 能正确反汇编 16 位代码",
+                    "text": "-gdb-set tdesc filename ${workspaceFolder}/config/gdb/target.xml",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "设置架构为 i8086",
+                    "text": "-gdb-set architecture i8086",
+                    "ignoreFailures": true
                 }
             ]
         }
