@@ -2,6 +2,7 @@
 
 .section .text
 
+.extern setup
 .global _start
 _start:
     // 初始化段
@@ -23,7 +24,14 @@ _start:
     mov $msg, %bp
     int $0x10
 
-    jmp .
+    // 加载并运行 setup
+    // 我们约定 setup 在紧随其后的一个扇区中，并且占用 4 个扇区
+    mov $0x204, %ax
+    mov $0x7e00, %bx
+    mov $2, %cx
+    mov $0x80, %dx
+    int $0x13
+    jmp setup
 
 msg:
     .string "Hello, world!"
