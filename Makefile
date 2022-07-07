@@ -9,6 +9,7 @@ LD := ld
 # 构建参数
 AS_FLAGS := --32
 LD_FLAGS := -m elf_i386
+DEBUG_FLAGS := -g
 
 # 工具
 DD := dd
@@ -34,6 +35,10 @@ $(BUILD)/aurora.img: $(BUILD)/boot/boot.bin
 # 运行 QEMU
 qemu: $(BUILD)/aurora.img
 	$(QEMU) -m $(MEM_SIZE) -drive file=$<,format=raw,if=ide
+
+# 以调试模式运行 QEMU
+qemu-debug: $(BUILD)/aurora.img
+	$(QEMU) -m $(MEM_SIZE) -drive file=$<,format=raw,if=ide -s -S
 
 # 清除所有构建内容
 clean:
