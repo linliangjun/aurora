@@ -24,10 +24,11 @@ IMG_SIZE := 16M
 MEM_SIZE := 16M
 
 # 创建磁盘镜像文件
-$(BUILD)/aurora.img: $(BUILD)/boot/boot.bin
+$(BUILD)/aurora.img: $(BUILD)/boot/boot.bin $(BUILD)/kernel/kernel.bin
 	@mkdir -p $(@D)
 	$(QEMU_IMG) create -f raw $@ $(IMG_SIZE)
 	$(DD) if=$< of=$@ conv=notrunc
+	$(DD) if=$(BUILD)/kernel/kernel.bin of=$@ seek=5 conv=notrunc
 
 # 虚假的目标
 .PHONY: qemu clean

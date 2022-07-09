@@ -2,6 +2,7 @@
 
 .section .text
 
+.extern load_kernel
 .global setup
 setup:
     // 进入保护模式
@@ -51,4 +52,6 @@ pe_code:
     movl $(0xb8000 + 160), %ebx
     movb $'P', (%ebx)
     movb $'E', 2(%ebx)
-    jmp .
+
+    // 跳转到内核加载器，加载内核
+    jmp load_kernel
