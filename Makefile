@@ -9,7 +9,7 @@ LD := ld
 
 # 构建参数
 AS_FLAGS := --32
-C_FLAGS := -m32 -fno-stack-protector -no-pie -fno-pic -mno-sse -Wall
+C_FLAGS := -m32 -fno-stack-protector -no-pie -fno-pic -mno-sse -Wall -I$(SRC)/include
 LD_FLAGS := -m elf_i386
 DEBUG_FLAGS := -g
 
