@@ -4,10 +4,12 @@ BUILD := build
 
 # 编译器和链接器
 AS := as
+CC := gcc
 LD := ld
 
 # 构建参数
 AS_FLAGS := --32
+C_FLAGS := -m32 -fno-stack-protector -no-pie -fno-pic -mno-sse -Wall
 LD_FLAGS := -m elf_i386
 DEBUG_FLAGS := -g
 
