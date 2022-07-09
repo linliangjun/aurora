@@ -6,7 +6,7 @@ $(BUILD)/kernel/%.o: $(SRC)/kernel/%.c
 	@mkdir -p $(@D)
 	$(CC) $(C_FLAGS) $(DEBUG_FLAGS) -c -o $@ $<
 
-$(BUILD)/kernel/kernel: $(BUILD)/kernel/start.o $(BUILD)/kernel/main.o $(BUILD)/kernel/io.o
+$(BUILD)/kernel/kernel: $(BUILD)/kernel/start.o $(BUILD)/kernel/main.o $(BUILD)/kernel/io.o $(BUILD)/kernel/console.o
 	$(LD) $(LD_FLAGS) -Ttext 0x10000 $^ -o $@
 
 $(BUILD)/kernel/kernel.bin: $(BUILD)/kernel/kernel
