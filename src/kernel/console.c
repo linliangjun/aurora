@@ -32,3 +32,28 @@ console_point get_cursor_pos()
     point.y = pos / _SCREEN_WIDTH;
     return point;
 }
+
+static unsigned char global_attr;
+static unsigned char attr;
+
+void set_console_global_attr(_Bool blinking, _Bool highlight, unsigned char bg, unsigned char fg)
+{
+    global_attr = attr = (((bg & 7) | ((blinking << 3) & 8)) << 4) | ((fg & 7) | ((highlight << 3) & 8));
+}
+
+void set_console_attr(_Bool blinking, _Bool highlight, unsigned char bg, unsigned char fg)
+{
+    attr = (((bg & 7) | ((blinking << 3) & 8)) << 4) | ((fg & 7) | ((highlight << 3) & 8));
+}
+
+#define _DISPLAY_MEM_BADDR 0xb8000 /* 显存基地址 */
+
+void console_clean()
+{
+    unsigned short *ptr =(unsigned short*)_DISPLAY_MEM_BADDR;
+    for (int i = 0; i < _SCREEN_HEIGHT * _SCREEN_WIDTH; i++)
+    {
+        ptr[i] = global_attr << 8;
+    }
+    set_cursor_pos(0, 0);
+}
