@@ -8,12 +8,14 @@
 #define _CURSOR_ADDRH_PORT 0xe  /* 光标地址端口（低 8 位） */
 #define _CURSOR_ADDRL_PORT 0xf  /* 光标地址端口（高 8 位） */
 
-void set_cursor_pos(unsigned char x, unsigned char y)
+typedef struct _console_cursor_point
 {
-    if (x >= _SCREEN_WIDTH || y >= _SCREEN_HEIGHT)
-    {
-        return;
-    }
+    unsigned char x;
+    unsigned char y;
+} _console_cursor_point;
+
+static void set_console_cursor_point(unsigned char x, unsigned char y)
+{
     unsigned short pos = y * _SCREEN_WIDTH + x;
     outb(_VIDEO_ADDR_PORT, _CURSOR_ADDRL_PORT);
     outb(_VIDEO_VALUE_PORT, pos);
@@ -21,9 +23,9 @@ void set_cursor_pos(unsigned char x, unsigned char y)
     outb(_VIDEO_VALUE_PORT, pos >> 8);
 }
 
-console_point get_cursor_pos()
+static _console_cursor_point get_console_cursor_point()
 {
-    struct console_point point;
+    struct _console_cursor_point point;
     outb(_VIDEO_ADDR_PORT, _CURSOR_ADDRL_PORT);
     unsigned short pos = inb(_VIDEO_VALUE_PORT);
     outb(_VIDEO_ADDR_PORT, _CURSOR_ADDRH_PORT);
@@ -36,14 +38,21 @@ console_point get_cursor_pos()
 static unsigned char global_attr;
 static unsigned char attr;
 
-void set_console_global_attr(_Bool blinking, _Bool highlight, unsigned char bg, unsigned char fg)
+static unsigned char gen_attr(_Bool blinking, _Bool highlight, unsigned char bg, unsigned char fg)
 {
-    global_attr = attr = (((bg & 7) | ((blinking << 3) & 8)) << 4) | ((fg & 7) | ((highlight << 3) & 8));
+    return (((bg & 7) | ((blinking << 3) & 8)) << 4) | ((fg & 7) | ((highlight << 3) & 8));
 }
 
 void set_console_attr(_Bool blinking, _Bool highlight, unsigned char bg, unsigned char fg)
 {
-    attr = (((bg & 7) | ((blinking << 3) & 8)) << 4) | ((fg & 7) | ((highlight << 3) & 8));
+    attr = gen_attr(blinking, highlight, bg, fg);
+}
+
+void console_init(_Bool blinking, _Bool highlight, unsigned char bg, unsigned char fg)
+{
+    global_attr = gen_attr(blinking, highlight, bg, fg);
+    set_console_attr(blinking, highlight, bg, fg);
+    console_clean();
 }
 
 #define _DISPLAY_MEM_BADDR 0xb8000 /* 显存基地址 */
@@ -55,5 +64,90 @@ void console_clean()
     {
         ptr[i] = global_attr << 8;
     }
-    set_cursor_pos(0, 0);
+    set_console_cursor_point(0, 0);
+}
+
+#define _ASCII_LF 0xa
+#define _ASCII_CR 0xd
+
+static void scroll_up(_console_cursor_point *point)
+{
+    unsigned char Y = (*point).y;
+    unsigned short *ptr = (unsigned short *)_DISPLAY_MEM_BADDR;
+    if (Y == 0)
+    {
+        for (unsigned char x = 0; x < _SCREEN_WIDTH; x++)
+        {
+            ptr[x] = global_attr << 8;
+        }
+        (*point).x = 0;
+    }
+    else
+    {
+        for (unsigned char y = 1; y <= Y; y++)
+        {
+            for (unsigned char x = 0; x < _SCREEN_WIDTH; x++)
+            {
+                ptr[x + (y - 1) * 80] = ptr[x + y * 80];
+            }
+            if (y == Y)
+            {
+                for (unsigned char x = 0; x < _SCREEN_WIDTH; x++)
+                {
+                    ptr[x + y * 80] = global_attr << 8;
+                }
+            }
+        }
+    }
+}
+
+static void lf(_console_cursor_point *point)
+{
+    if ((*point).y + 1 >= _SCREEN_HEIGHT)
+    {
+        scroll_up(point);
+    }
+    else
+    {
+        (*point).y += 1;
+    }
+}
+
+static void cr(_console_cursor_point *point)
+{
+    (*point).x = 0;
+}
+
+void console_print(char *msg, unsigned int len)
+{
+    _console_cursor_point point = get_console_cursor_point();
+    unsigned short *ptr = (unsigned short *)((point.x + point.y * _SCREEN_WIDTH) * 2 + _DISPLAY_MEM_BADDR);
+    for (unsigned int i = 0; i < len; i++)
+    {
+        char ch = msg[i];
+        switch (ch)
+        {
+        case _ASCII_LF:
+            lf(&point);
+            ptr = (unsigned short *)((point.x + point.y * _SCREEN_WIDTH) * 2 + _DISPLAY_MEM_BADDR);
+            break;
+        case _ASCII_CR:
+            cr(&point);
+            ptr = (unsigned short *)((point.x + point.y * _SCREEN_WIDTH) * 2 + _DISPLAY_MEM_BADDR);
+            break;
+        default:
+            if (point.x + 1 > _SCREEN_WIDTH)
+            {
+                lf(&point);
+                cr(&point);
+                ptr = (unsigned short *)((point.x + point.y * _SCREEN_WIDTH) * 2 + _DISPLAY_MEM_BADDR);
+            }
+            *ptr = (attr << 8) | ch;
+            ptr++;
+            point.x++;
+
+            break;
+        }
+    }
+    set_console_cursor_point(point.x, point.y);
 }
