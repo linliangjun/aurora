@@ -14,7 +14,7 @@ OBJCOPY := $(TOOLCHAIN_PREFIX)objcopy
 
 $(BUILD_BIN_DIR)/%.o: $(SRC_DIR)/%.S
 	@mkdir -p $(@D)
-	$(AS) --32 --fatal-warnings -o $@ $<
+	$(AS) --32 -g --fatal-warnings -o $@ $<
 
 $(BUILD_BIN_DIR)/%.bin: $(BUILD_BIN_DIR)/%
 	$(OBJCOPY) -O binary $< $@
@@ -27,9 +27,12 @@ $(BUILD_DIR)/aurora.img: $(BUILD_BIN_DIR)/boot/boot.bin
 
 include $(shell find $(SRC_DIR) -name "*.mk")
 
-.PHONY: clean qemu
+.PHONY: clean qemu qemu-gdb
 clean:
 	rm -rf $(BUILD_DIR)
 
 qemu: $(BUILD_DIR)/aurora.img
 	qemu-system-i386 -m 32M -drive file=$<,format=raw,if=floppy -boot a
+
+qemu-gdb: $(BUILD_DIR)/aurora.img
+	qemu-system-i386 -m 32M -drive file=$<,format=raw,if=floppy -boot a -s -S

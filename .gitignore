@@ -9,3 +9,6 @@
 
 ### Make ###
 /build/*
+
+### GDB ###
+/.gdb_history
