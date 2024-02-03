@@ -5,6 +5,8 @@ PHDRS
 {
     mbr_text PT_LOAD;
     mbr_rodata PT_LOAD;
+    text PT_LOAD;
+    bss PT_LOAD;
 }
 
 SECTIONS
@@ -28,4 +30,14 @@ SECTIONS
     .mbr_sig : {
         SHORT(0xaa55);
     } : mbr_rodata
+
+    .text : {
+        *(.text);
+    } : text
+
+    . = ALIGN(16);
+
+    .bss : {
+        *(.bss);
+    } : bss
 }
