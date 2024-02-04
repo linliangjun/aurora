@@ -6,6 +6,7 @@ PHDRS
     mbr_text PT_LOAD;
     mbr_rodata PT_LOAD;
     text PT_LOAD;
+    rodata PT_LOAD;
     bss PT_LOAD;
 }
 
@@ -34,6 +35,12 @@ SECTIONS
     .text : {
         *(.text);
     } : text
+
+    . = ALIGN(16);
+
+    .rodata : {
+        *(.rodata);
+    } : rodata
 
     . = ALIGN(16);
 
