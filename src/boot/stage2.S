@@ -43,7 +43,8 @@ protect_entry:
     mov     %ax, %ss
     mov     $stage2_entry, %esp
 
-    jmp     .
+    # 跳转到 stage2_main
+    jmp     stage2_main
 
     .section .rodata
 gdt:
@@ -53,3 +54,5 @@ gdt:
 gdt_desc:
     .word   . - gdt - 1
     .long   gdt
+
+    .section .note.GNU-stack, "", @progbits

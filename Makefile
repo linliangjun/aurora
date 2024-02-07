@@ -1,6 +1,7 @@
 SRC_DIR := ./src
 BUILD_DIR := ./build
 BUILD_BIN_DIR := $(BUILD_DIR)/bin
+INCLUDE_DIR := $(SRC_DIR)/include
 
 HOST_SYSTEM := $(shell uname -o)-$(shell uname -m)
 
@@ -9,12 +10,17 @@ ifeq ($(HOST_SYSTEM),GNU/Linux-aarch64)
 endif
 
 AS := $(TOOLCHAIN_PREFIX)as
+CC := $(TOOLCHAIN_PREFIX)gcc
 LD := $(TOOLCHAIN_PREFIX)ld
 OBJCOPY := $(TOOLCHAIN_PREFIX)objcopy
 
 $(BUILD_BIN_DIR)/%.o: $(SRC_DIR)/%.S
 	@mkdir -p $(@D)
 	$(AS) --32 -g --fatal-warnings -o $@ $<
+
+$(BUILD_BIN_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(@D)
+	$(CC) -c -m32 -ffreestanding -nostdinc -fno-pie -fno-asynchronous-unwind-tables -I$(INCLUDE_DIR) -g -MD -Wall -Werror -o $@ $<
 
 $(BUILD_BIN_DIR)/%.bin: $(BUILD_BIN_DIR)/%
 	$(OBJCOPY) -O binary $< $@
@@ -26,6 +32,10 @@ $(BUILD_DIR)/aurora.img: $(BUILD_BIN_DIR)/boot/boot.bin
 	touch $@
 
 include $(shell find $(SRC_DIR) -name "*.mk")
+
+ifneq ($(wildcard $(BUILD_BIN_DIR)),)
+    include $(shell find $(BUILD_BIN_DIR) -name "*.d")
+endif
 
 .PHONY: clean qemu qemu-gdb
 clean:

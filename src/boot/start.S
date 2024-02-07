@@ -48,3 +48,5 @@ prompt:
 
     .bss
     .comm   driver_num, 1
+
+    .section .note.GNU-stack, "", @progbits

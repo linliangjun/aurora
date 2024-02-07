@@ -32,3 +32,5 @@ strlen_16:
     pop     %bx
     leave
     ret
+
+    .section .note.GNU-stack, "", @progbits

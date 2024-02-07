@@ -40,3 +40,5 @@ puts_16:
 
     leave
     ret
+
+    .section .note.GNU-stack, "", @progbits
