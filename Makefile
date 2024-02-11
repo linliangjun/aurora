@@ -13,6 +13,7 @@ AS := $(TOOLCHAIN_PREFIX)as
 CC := $(TOOLCHAIN_PREFIX)gcc
 LD := $(TOOLCHAIN_PREFIX)ld
 OBJCOPY := $(TOOLCHAIN_PREFIX)objcopy
+AR := $(TOOLCHAIN_PREFIX)ar
 
 $(BUILD_BIN_DIR)/%.o: $(SRC_DIR)/%.S
 	@mkdir -p $(@D)
