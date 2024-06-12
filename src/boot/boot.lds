@@ -17,6 +17,11 @@ SECTIONS
         *(.text);
     } : text
 
+    . = ALIGN(16);
+
+    .rodata : {
+        *(.rodata);
+    } : rodata
 
     . = 0x7dfe;
 
