@@ -5,6 +5,8 @@ PHDRS
 {
     text PT_LOAD;
     rodata PT_LOAD;
+    text.stage2 PT_LOAD;
+    rodata.stage2 PT_LOAD;
     bss PT_LOAD;
 }
 
@@ -30,6 +32,18 @@ SECTIONS
     .sig.mbr : {
         SHORT(0xaa55);
     } : rodata
+
+    .text.stage2 : {
+        *(.text.stage2);
+    } : text.stage2
+
+    . = ALIGN(16);
+
+    .rodata.stage2 : {
+        *(.rodata.stage2);
+    } : rodata.stage2
+
+    . = ALIGN(16);
 
     .bss : {
         *(.bss);
