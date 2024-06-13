@@ -2,9 +2,10 @@
 #
 # Copyright 2024 linliangjun
 
+    .extern setmode_16, putstrln_16
     .globl  start
 
-    .text
+    .section .text.start
     .code16
 start:
     # 通过跳转间接设置段寄存器 cs
@@ -21,22 +22,20 @@ begin:
     mov     $start, %sp             # sp = 0x7c00
 
     # 设置显示模式为 80 * 25 16 色文本模式
-    mov     $3, %ax
-    int     $0x10
+    push    $0
+    push    $3
+    call    setmode_16
+    add     $4, %sp
 
     # 打印字符串
-    mov     $0x1301, %ax
-    mov     $7, %bx
-    mov     len, %cx
-    xor     %dx, %dx
-    mov     $message, %bp
-    int     $0x10
+    push    $7
+    push    $message
+    call    putstrln_16
+    add     $4, %sp
 
     # 无限循环
     jmp     .
 
     .section .rodata
 message:
-    .ascii  "Hello world!"
-len:
-    .word   . - message
+    .string "Hello world!"

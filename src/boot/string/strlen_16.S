@@ -1,0 +1,34 @@
+# 计算字符串长度函数
+#
+# uint16_t strlen_16(int8_t *str);
+#
+# 参数 str: 字符串首地址，段寄存器为 es，由调用者设置
+#
+# 返回值：字符串长度
+#
+# 注意：实际字符串长度不能超过 65535，否则会绕回导致无限循环。
+#
+# Copyright 2024 linliangjun
+
+    .globl  strlen_16
+
+    .text
+    .code16
+strlen_16:
+    push    %bp
+    mov     %sp, %bp
+    push    %bx
+    push    %si
+    mov     4(%bp), %bx
+    xor     %si, %si
+1:
+    cmpb    $0, %es:(%bx, %si)
+    je      2f
+    inc     %si
+    jmp     1b
+2:
+    mov     %si, %ax
+    pop     %si
+    pop     %bx
+    leave
+    ret
