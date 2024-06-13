@@ -2,7 +2,7 @@
 #
 # Copyright 2024 linliangjun
 
-    .extern setmode_16, putstrln_16
+    .extern setmode_16, putstrln_16, panic_16
     .globl  start
 
     .section .text.start
@@ -33,8 +33,9 @@ begin:
     call    putstrln_16
     add     $4, %sp
 
-    # 无限循环
-    jmp     .
+    # 到达流程末尾，panic
+    push    $1                      # 错误码
+    call    panic_16
 
     .section .rodata
 message:
