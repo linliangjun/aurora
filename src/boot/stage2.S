@@ -2,7 +2,7 @@
 #
 # Copyright 2024 linliangjun
 
-    .extern putstrln_16, panic_16
+    .extern putstrln_16, real2prot
     .globl  stage2_start
 
     .section .text.stage2
@@ -14,9 +14,12 @@ stage2_start:
     call    putstrln_16
     add     $4, %sp
 
-    # 到达流程末尾，panic
-    push    $1                      # 错误码
-    call    panic_16
+    pushl   $0x7c00
+    call    real2prot
+
+    .code32
+    movb     $'P', 0xb8000 + 160 * 2
+    jmp     .
 
     .section .rodata.stage2
 message:
