@@ -11,6 +11,16 @@
 #define STACK_TOP   0x7c00
 #define MSG(addr)   cld; mov $addr, %si; call tty_puts
 
+#define STAGE2_CYLINDER 0       // 第二阶段引导起始柱面号
+#define STAGE2_HEAD 0           // 第二阶段引导起始磁头号
+#define STAGE2_SECTOR 2         // 第二阶段引导起始扇区号
+#define STAGE2_SECTOR_COUNT 15  // 第二阶段引导扇区数量
+#define STAGE2_ADDR 0x7e00      // 第二阶段引导地址
+
+#define MAX_RETRY 3
+
+#define CYLINDER_SECTOR(c, s) ((c) << 8) | (((c) >> 2) & 0xc0) | (s)
+
     .globl      _start
 
     .text
@@ -28,12 +38,48 @@ _start:
     mov         %ax, %es
     mov         %ax, %ss
     mov         $STACK_TOP, %sp
+    mov         %sp, %bp
 
     // 重新开启中断
     sti
 
+    // 保存驱动器号到栈中
+    push        %dx
+
     // 打印消息
     MSG(notification_string)
+
+    /* 下面开始加载第二阶段引导程序（硬编码 CHS），具有失败重试机制 */
+    // 保存重试次数（0）到栈中
+    push        $0
+1:
+    mov         $(0x200 + STAGE2_SECTOR_COUNT), %ax
+    mov         $STAGE2_ADDR, %bx
+    mov         $CYLINDER_SECTOR(STAGE2_CYLINDER, STAGE2_SECTOR), %cx
+    mov         $STAGE2_HEAD, %dh
+    mov         -2(%bp), %dl
+    int         $0x13
+
+    // 调用出错（CF = 1），进入错误处理；否则将控制权转移给第二阶段引导代码
+    jc          2f
+    add         $2, %sp
+    jmp         STAGE2_ADDR
+
+2:
+    // 重试次数 + 1
+    incb        -4(%bp)
+
+    // 判断是否到最大重试次数
+    // 若达到最大重试次数，则打印错误信息并停止；否则重置驱动器，并重试
+    cmpb        $MAX_RETRY, -4(%bp)
+    jae         3f
+    xor         %ah, %ah
+    int         $0x13
+    jmp         1b
+
+3:
+    // 打印错误信息
+    MSG(load_error_string)
 
     // 无限循环
     jmp         .
@@ -54,7 +100,9 @@ tty_puts:
     ret
 
 notification_string:
-    .string     "Aurora"
+    .string     "Aurora\r\n"
+load_error_string:
+    .string     "Failed to load the second stage.\r\n"
 
     // 最后两个字节是 MBR 魔数，固定为 0x55，0xaa
     .org        0x1fe
