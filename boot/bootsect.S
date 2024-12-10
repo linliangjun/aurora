@@ -37,7 +37,7 @@ _start:
     mov         %ax, %ds
     mov         %ax, %es
     mov         %ax, %ss
-    mov         $STACK_TOP, %sp
+    mov         $STACK_TOP, %esp
     mov         %sp, %bp
 
     // 重新开启中断

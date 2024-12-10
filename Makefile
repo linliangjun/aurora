@@ -7,6 +7,8 @@ QEMU_SYSTEM_I386 = $(QEMU_SYSTEM_I386_PREFIX)qemu-system-i386
 BOCHS = $(BOCHS_PREFIX)bochs
 
 ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD
+CFLAGS := -m32 -ffreestanding -Wall -Werror -MD \
+        -march=pentium -fno-pie -fno-asynchronous-unwind-tables
 QEMUFLAGS := -cpu pentium -m 32M \
 	-drive if=floppy,format=raw,file=$(BUILD_DIR)/aurora.img \
 	-boot a -monitor stdio
@@ -31,6 +33,10 @@ $(BUILD_DIR)/.bochsrc:
 $(BUILD_DIR)/%.o: %.S
 	@mkdir -p $(@D)
 	$(CC) -c $(ASMFLAGS) -o $@ $<
+
+$(BUILD_DIR)/%.o: %.c
+	@mkdir -p $(@D)
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%
 	$(OBJCOPY) -O binary $< $@
