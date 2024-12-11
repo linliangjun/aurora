@@ -1,6 +1,7 @@
 STAGE2_OBJS := $(BUILD_DIR)/boot/stage2.o \
 	$(BUILD_DIR)/boot/mode_switch.o \
-	$(BUILD_DIR)/boot/main.o
+	$(BUILD_DIR)/boot/main.o \
+	$(BUILD_DIR)/boot/bioscall.o
 
 $(BUILD_DIR)/boot/%: boot/%.ld $(BUILD_DIR)/boot/%.o
 	$(LD) -o $@ -T $^
