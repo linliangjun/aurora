@@ -8,6 +8,7 @@
     .global	    _start
 _start:
     call        console_init
+    call        gdt_init
 
     call        main
     jmp         .

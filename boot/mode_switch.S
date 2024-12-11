@@ -4,7 +4,9 @@
  * Copyright 2024 linliangjun
  */
 
-#include "seg.h"
+#define __ASSEMBLY__
+
+#include "aurora/seg.h"
 
 #define CODE32_DESC_SELE SEG_DESC_SELE(1, 0, 0)
 #define DATA32_DESC_SELE SEG_DESC_SELE(2, 0, 0)

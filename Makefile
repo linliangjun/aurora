@@ -10,7 +10,8 @@ BOCHS = $(BOCHS_PREFIX)bochs
 ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD -g -I$(INCLUDE_DIR)
 CFLAGS := -m32 -ffreestanding -Wall -Werror -MD -g -I$(INCLUDE_DIR)\
         -march=pentium -fno-pie -fno-asynchronous-unwind-tables \
-		-fno-stack-protector
+		-fno-stack-protector -DDEBUG
+
 QEMUFLAGS := -cpu pentium -m 32M \
 	-drive if=floppy,format=raw,file=$(BUILD_DIR)/aurora.img \
 	-boot a -monitor stdio
