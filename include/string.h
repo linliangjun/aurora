@@ -9,4 +9,8 @@
 
 void *memcpy(void *dest, const void *src, unsigned int n);
 
+void *memset(void *dest, char ch, unsigned int n);
+
+unsigned int strlen(const char *str);
+
 #endif
