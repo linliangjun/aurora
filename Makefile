@@ -6,8 +6,8 @@ OBJCOPY = $(BINUTILS_PREFIX)objcopy
 QEMU_SYSTEM_I386 = $(QEMU_SYSTEM_I386_PREFIX)qemu-system-i386
 BOCHS = $(BOCHS_PREFIX)bochs
 
-ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD
-CFLAGS := -m32 -ffreestanding -Wall -Werror -MD \
+ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD -g
+CFLAGS := -m32 -ffreestanding -Wall -Werror -MD -g \
         -march=pentium -fno-pie -fno-asynchronous-unwind-tables \
 		-fno-stack-protector
 QEMUFLAGS := -cpu pentium -m 32M \
@@ -49,6 +49,9 @@ clean:
 
 qemu: all
 	$(QEMU_SYSTEM_I386) $(QEMUFLAGS)
+
+qemu-gdb: all
+	$(QEMU_SYSTEM_I386) $(QEMUFLAGS) -s -S
 
 bochs: $(BUILD_DIR)/.bochsrc all
 	cd $(dir $<); $(BOCHS) -q $(BOCHSFLAGS)
