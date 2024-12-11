@@ -4,7 +4,10 @@
  * Copyright 2024 linliangjun
  */
 
-    .text
+    .section    .text.startup, "ax"
     .global	    _start
 _start:
+    call        console_init
+
+    call        main
     jmp         .

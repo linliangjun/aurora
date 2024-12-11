@@ -1,4 +1,5 @@
 BUILD_DIR := build
+INCLUDE_DIR := include
 
 CC = $(CC_PREFIX)gcc
 LD = $(BINUTILS_PREFIX)ld
@@ -6,8 +7,8 @@ OBJCOPY = $(BINUTILS_PREFIX)objcopy
 QEMU_SYSTEM_I386 = $(QEMU_SYSTEM_I386_PREFIX)qemu-system-i386
 BOCHS = $(BOCHS_PREFIX)bochs
 
-ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD -g
-CFLAGS := -m32 -ffreestanding -Wall -Werror -MD -g \
+ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD -g -I$(INCLUDE_DIR)
+CFLAGS := -m32 -ffreestanding -Wall -Werror -MD -g -I$(INCLUDE_DIR)\
         -march=pentium -fno-pie -fno-asynchronous-unwind-tables \
 		-fno-stack-protector
 QEMUFLAGS := -cpu pentium -m 32M \
