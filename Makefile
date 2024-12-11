@@ -42,7 +42,7 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%
 	$(OBJCOPY) -O binary $< $@
 
-all: build-boot
+all: build-boot build-kernel
 
 clean:
 	rm -rf $(BUILD_DIR)
