@@ -4,7 +4,7 @@
  * Copyright 2024 linliangjun
  */
 
-    .section    .text.startup, "ax"
+    .text
     .global	    _start
 _start:
     pop         %eax
