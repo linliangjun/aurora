@@ -9,5 +9,5 @@
 
 void main(void)
 {
-    pr_info("kernel version: %s", KERNEL_VERSION);
+    pr_info("kernel version: %s\n", KERNEL_VERSION);
 }

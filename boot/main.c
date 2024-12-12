@@ -17,7 +17,28 @@
     int_10h_0eh(str[i])
 
 static const char notification_string[] = "Boot main OK!\r\n";
+static const char detect_memory_error_string[] = "Detect memory failed.\r\n";
 static const char load_kernel_error_string[] = "Load kernel failed.\r\n";
+
+ards_t ards_vec[20];
+unsigned char ards_vec_size;
+
+/**
+ * 获取内存映射信息
+ *
+ * @return 错误码，0 表示正常
+ */
+unsigned char detect_memory(void)
+{
+    unsigned int next = 0;
+    unsigned char code;
+    do
+    {
+        code = int_15h_e820h(ards_vec + ards_vec_size, &next);
+        ards_vec_size++;
+    } while (!code && next);
+    return code;
+}
 
 /**
  * 加载内核
@@ -41,11 +62,18 @@ static unsigned char load_kernel(unsigned char driver_id)
     return 0;
 }
 
-void main(unsigned char driver_id)
+unsigned char main(unsigned char driver_id)
 {
     MSG(notification_string);
+    if(detect_memory())
+    {
+        MSG(detect_memory_error_string);
+        return 1;
+    }
     if (load_kernel(driver_id))
+    {
         MSG(load_kernel_error_string);
-    else
-        __asm__ __volatile__("jmp *%0" : : "a"(KERNEL_ADDR));
+        return 1;
+    }
+    return 0;
 }

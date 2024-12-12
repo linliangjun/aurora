@@ -4,6 +4,8 @@
  * Copyright 2024 linliangjun
  */
 
+#define KERNEL_ADDR 0x100000
+
     .globl      _start
 
     .section    .text.startup, "ax"
@@ -19,5 +21,14 @@ _start:
     push        %edx
     call        main
     add         $4, %esp
+
+    cmp         $0, %al
+    jne         1f
+
+    push        $ards_vec
+    push        ards_vec_size
+    jmp         KERNEL_ADDR
+
+1:
 
     jmp         .
