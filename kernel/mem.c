@@ -6,6 +6,7 @@
 
 #include "aurora/mem.h"
 #include "aurora/printk.h"
+#include "assert.h"
 
 extern ards_t *ards_vec;
 extern u8 ards_vec_size;
