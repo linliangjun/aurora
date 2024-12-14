@@ -4,9 +4,15 @@
  * Copyright 2024 linliangjun
  */
 
-    .text
+    .section    .text.startup, "ax"
     .global	    _start
 _start:
+    // 开启内存分页
+    call        enable_mem_page
+    jmp         kernel_start
+
+    .text
+kernel_start:
     pop         %eax
     mov         %al, ards_vec_size
     pop         %eax
