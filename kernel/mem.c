@@ -15,11 +15,11 @@
 #define PHYS_ADDR(addr) ((addr) - (u32) & __kernel_start + 0x100000)
 #define PHYS_PAGE_INDEX(addr) (PAGE_INDEX(PHYS_ADDR(addr)))
 
-extern ards_t *ards_vec;
-extern u8 ards_vec_size;
 extern void *__kernel_start;
 extern void *__kernel_end;
 
+static const ards_t *ards_vec;
+static u8 ards_vec_size;
 static u32 phys_mem_base;
 static u32 phys_mem_len;
 static u32 phys_mem_base_page;
@@ -70,11 +70,13 @@ __attribute__((__section__(".text.startup"))) void enable_mem_page(void)
         : : "a"(_page_dir_tab));
 }
 
-void mem_init(void)
+void mem_init(u8 _ards_vec_size, const ards_t *_ards_vec)
 {
+    ards_vec = _ards_vec;
+    ards_vec_size = _ards_vec_size;
     for (u8 i = 0; i < ards_vec_size; i++)
     {
-        ards_t *ards = ards_vec + i;
+        const ards_t *ards = ards_vec + i;
         pr_debug("BIOS e820, base: %#.8x, len: %#.8x, type: %d\n",
                  ards->base_low, ards->len_low, ards->type);
         if (ards->type == ARDS_TYPE_AVL && ards->len_low > phys_mem_len)

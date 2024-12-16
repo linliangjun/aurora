@@ -36,6 +36,6 @@ typedef struct
 #define ARDS_TYPE_AVL 1
 #define ARDS_TYPE_RESV 2
 
-void mem_init(void);
+void mem_init(u8 _ards_vec_size, const ards_t *_ards_vec);
 
 #endif

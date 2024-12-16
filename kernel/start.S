@@ -13,18 +13,16 @@ _start:
 
     .text
 kernel_start:
-    pop         %eax
-    mov         %al, ards_vec_size
-    pop         %eax
-    mov         %eax, ards_vec
-
     call        console_init
     call        gdt_init
     call        mem_init
+    add         $8, %esp
+    mov         $stack_top, %esp
 
     call        main
     jmp         .
 
     .bss
-    .comm       ards_vec, 4
-    .comm       ards_vec_size, 1
+    .align      16
+    .skip       16 * 1024
+stack_top:
