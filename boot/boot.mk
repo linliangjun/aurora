@@ -12,6 +12,8 @@ BOOT_LOCK += $(BUILD_DIR)/boot/stage$(1)/stage$(1).lock
 
 BOOT_STAGE$(1)_OBJS := \
 	$(patsubst boot/stage$(1)/%.S,$(BUILD_DIR)/boot/stage$(1)/%.o, $(shell find boot/stage$(1) -name "*.S"))
+BOOT_STAGE$(1)_OBJS += \
+	$(patsubst boot/stage$(1)/%.c,$(BUILD_DIR)/boot/stage$(1)/%.o, $(shell find boot/stage$(1) -name "*.c"))
 
 $(BUILD_DIR)/boot/stage$(1)/stage$(1): boot/stage$(1)/stage$(1).ld $$(BOOT_STAGE$(1)_OBJS)
 	$$(LD) -T $$< -o $$@ $$(BOOT_STAGE$(1)_OBJS)
