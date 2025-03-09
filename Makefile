@@ -7,6 +7,7 @@ BOCHS = $(BOCHS_PREFIX)bochs
 CC = $(CC_PREFIX)gcc
 LD = $(BINUTILS_PREFIX)ld
 OBJCOPY = $(BINUTILS_PREFIX)objcopy
+AR = $(BINUTILS_PREFIX)ar
 
 QEMUFLAGS := -cpu pentium -m 32M \
 	-drive if=floppy,format=raw,file=$(SYSTEM_IMG) \

@@ -7,4 +7,6 @@
     .text
     .global	    _start
 _start:
-    jmp         .
+    call        console_init
+
+    call        main
