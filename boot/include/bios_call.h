@@ -46,4 +46,17 @@ unsigned char int_13h_08h(unsigned char driver_id,
                           unsigned short *max_cylinder_sector,
                           unsigned char *max_head);
 
+/**
+ * 获取内存布局
+ *
+ * @param next 后续值，首次调用置 0
+ * @param seg ARDS 缓冲区段地址
+ * @param offset ARDS 缓冲区偏移地址
+ *
+ * @return 错误码，0 表示正常
+ */
+unsigned char int_15h_e820h(unsigned int *next,
+                            unsigned short seg,
+                            unsigned short offset);
+
 #endif

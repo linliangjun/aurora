@@ -31,11 +31,32 @@ static unsigned char load_kernel_phdr(unsigned char driver_id,
     return code;
 }
 
-static unsigned char load_kernel_segment(unsigned char driver_id, const elf32_phdr_t *phdr)
+static unsigned char load_kernel_segment(unsigned char driver_id,
+                                         const elf32_phdr_t *phdr,
+                                         const ards_t *ards_vec,
+                                         unsigned int ards_vec_size)
 {
     // 非 PT_LOAD 类型的段，跳过
     if (phdr->p_type != PT_LOAD)
         return 0;
+
+    // 判断段载入的内存是否可用
+    _Bool available = 0;
+    unsigned int segment_start = phdr->p_paddr, segment_end = segment_start + phdr->p_memsz;
+    for (unsigned int i = 0; i < ards_vec_size; i++)
+    {
+        const ards_t *ards = ards_vec + i;
+        if (ards->type != ARDS_TYPE_UNUSED)
+            continue;
+        unsigned int ards_start = ards->base_low, ards_end = ards_start + ards->len_low;
+        if (segment_start >= ards_start && segment_start < ards_end && segment_end <= ards_end)
+        {
+            available = 1;
+            break;
+        }
+    }
+    if (!available)
+        return 1;
 
     // count 表示已加载的字节数量，buf 表示缓冲区
     unsigned int count = 0;
@@ -94,7 +115,10 @@ static unsigned char load_kernel_segment(unsigned char driver_id, const elf32_ph
     return 0;
 }
 
-unsigned char load_kernel(unsigned char driver_id, unsigned int *kernel_entry)
+unsigned char load_kernel(unsigned char driver_id,
+                          unsigned int *kernel_entry,
+                          const ards_t *ards_vec,
+                          unsigned int ards_vec_size)
 {
     // 加载文件头
     elf32_ehdr_t ehdr;
@@ -112,7 +136,7 @@ unsigned char load_kernel(unsigned char driver_id, unsigned int *kernel_entry)
             return code;
 
         // 加载段
-        code = load_kernel_segment(driver_id, &phdr);
+        code = load_kernel_segment(driver_id, &phdr, ards_vec, ards_vec_size);
         if (code)
             return code;
     }

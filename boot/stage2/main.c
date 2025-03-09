@@ -6,6 +6,7 @@
 
 #include "console.h"
 #include "kernel_loader.h"
+#include "mem.h"
 
 #define half_byte_to_hex(n) (n) < 10 ? (n) + '0' : (n) - 10 + 'a'
 
@@ -36,9 +37,17 @@ __attribute__((noreturn)) void main(unsigned char driver_id)
 {
     console_write("The second stage main, OK!\r\n");
 
+    // 获取内存布局
+    ards_t ards_vec[20];
+    unsigned int ards_vec_size;
+    unsigned char code = detect_mem(ards_vec, &ards_vec_size);
+    assert_is_zero(code, "Detect mem failed.");
+
+    console_write("Detect mem success.\r\n");
+
     // 加载内核
     unsigned int kernel_entry;
-    unsigned char code = load_kernel(driver_id, &kernel_entry);
+    code = load_kernel(driver_id, &kernel_entry, ards_vec, ards_vec_size);
     assert_is_zero(code, "Load kernel failed!");
 
     console_write("Load kernel success.\r\n");
