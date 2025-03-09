@@ -1,6 +1,4 @@
 /**
- * 字符串工具库
- *
  * Copyright 2025 linliangjun
  */
 

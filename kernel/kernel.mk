@@ -1,8 +1,8 @@
 KERNEL_OBJS := $(patsubst kernel/%.S,$(BUILD_DIR)/kernel/%.o, $(shell find kernel -name "*.S"))
 KERNEL_OBJS += $(patsubst kernel/%.c,$(BUILD_DIR)/kernel/%.o, $(shell find kernel -name "*.c"))
 
-KERNEL_ASMFLAGS := -Iinclude
-KERNEL_CFLAGS := -Iinclude
+KERNEL_ASMFLAGS := -Iinclude -DDEBUG
+KERNEL_CFLAGS := -Iinclude -DDEBUG
 
 $(BUILD_DIR)/kernel/%.o: kernel/%.S
 	@mkdir -p $(@D)

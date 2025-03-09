@@ -4,13 +4,13 @@
  * Copyright 2025 linliangjun
  */
 
-#include "aurora/console.h"
+#include "aurora/kernel.h"
+#include "aurora/printk.h"
+#include "aurora/types.h"
 
 __attribute__((noreturn)) void main(void)
 {
-    char *video_text_ptr = get_cursor();
-    video_text_ptr = console_write(video_text_ptr, "Kernel main OK!\n");
-    set_cursor(video_text_ptr);
+    pr_info("Kernel name: %s, version: %s\n", KERNEL_NAME, KERNEL_VERSION);
 
     while (true)
         ;
