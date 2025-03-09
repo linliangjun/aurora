@@ -4,12 +4,13 @@
  * Copyright 2025 linliangjun
  */
 
+#include "bios_call.h"
+
 __attribute__((noreturn)) void main(unsigned char driver_id)
 {
     char msg[] = "The second stage main, OK!";
-    short *vbuf = (short *)0xb8000;
     for (unsigned int i = 0; i < sizeof(msg) - 1; i++)
-        vbuf[i] = (14 << 8) | msg[i];
+        int_10h_0eh(msg[i]);
     while (1)
         ;
 }

@@ -13,4 +13,7 @@
 #define STAGE2_SECTOR_COUNT 15  // 第二阶段引导扇区数量
 #define STAGE2_ADDR 0x7e00      // 第二阶段引导地址
 
+#define REAL_STACK_INIT 0x7c00  // 16 位实地址模式初始栈
+#define PROT_STACK_INIT 0x90000 // 32 位保护模式初始栈
+
 #endif

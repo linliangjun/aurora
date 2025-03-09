@@ -1,4 +1,5 @@
 BOOT_ASMFLAGS := -Iboot/include
+BOOT_CFLAGS := -Iboot/include
 
 BOOT_STAGE := 1 2
 BOOT_STAGE_LBA := 0 1
@@ -6,6 +7,10 @@ BOOT_STAGE_LBA := 0 1
 $(BUILD_DIR)/boot/%.o: boot/%.S
 	@mkdir -p $(@D)
 	$(CC) -c $(ASMFLAGS) $(BOOT_ASMFLAGS) -o $@ $<
+
+$(BUILD_DIR)/boot/%.o: boot/%.c
+	@mkdir -p $(@D)
+	$(CC) -c $(CFLAGS) $(BOOT_CFLAGS) -o $@ $<
 
 define boot_stage
 BOOT_LOCK += $(BUILD_DIR)/boot/stage$(1)/stage$(1).lock
