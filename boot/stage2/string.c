@@ -13,3 +13,11 @@ void *memcpy(void *dest, const void *src, unsigned int n)
         *pdest++ = *psrc++;
     return dest;
 }
+
+void *memset(void *dest, char ch, unsigned int n)
+{
+    char *pdest = (char *)dest;
+    while (n--)
+        *pdest++ = ch;
+    return dest;
+}

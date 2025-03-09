@@ -9,4 +9,6 @@
 
 void *memcpy(void *dest, const void *src, unsigned int n);
 
+void *memset(void *dest, char ch, unsigned int n);
+
 #endif
