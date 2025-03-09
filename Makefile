@@ -15,8 +15,8 @@ BOCHSFLAGS := 'cpu: model=pentium' 'megs: 32' \
 	'floppya: 1_44=$(SYSTEM_IMG), status=inserted' \
 	'boot: floppy' \
 	'magic_break: enabled=1'
-ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD
-CFLAGS := -m32 -ffreestanding -Wall -Werror -MD \
+ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD -g
+CFLAGS := -m32 -ffreestanding -Wall -Werror -MD -g \
 	-march=pentium -fno-pie -fno-asynchronous-unwind-tables -std=c99
 
 include $(shell find ./ \( -name "*.mk" -o -name "*.d" \))
@@ -39,13 +39,16 @@ $(SYSTEM_IMG):
 	@mkdir -p $(@D)
 	dd if=/dev/zero of=$@ count=2880
 
-all: build-boot
+all: build-boot build-kernel
 
 clean:
 	rm -rf $(BUILD_DIR)
 
 qemu: all
 	$(QEMU_SYSTEM_I386) $(QEMUFLAGS)
+
+qemu-gdb: all
+	$(QEMU_SYSTEM_I386) $(QEMUFLAGS) -s -S
 
 bochs: all
 	$(BOCHS) -q $(BOCHSFLAGS)
