@@ -6,6 +6,7 @@
 
 #include "aurora/printk.h"
 #include "aurora/console.h"
+#include "assert.h"
 #include "stdio.h"
 
 void printk(const char *fmt, ...)
@@ -14,8 +15,10 @@ void printk(const char *fmt, ...)
 
     va_list args;
     va_start(args, fmt);
-    vsprintf(buf, fmt, args);
+    u32 size = vsprintf(buf, fmt, args);
     va_end(args);
+
+    assert(size <= sizeof(buf));
 
     char *video_text_ptr = get_cursor();
     video_text_ptr = console_write(video_text_ptr, buf);

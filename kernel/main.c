@@ -11,7 +11,6 @@
 __attribute__((noreturn)) void main(void)
 {
     pr_info("Kernel name: %s, version: %s\n", KERNEL_NAME, KERNEL_VERSION);
-
     while (true)
         ;
 }
