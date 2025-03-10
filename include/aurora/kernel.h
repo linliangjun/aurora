@@ -10,4 +10,6 @@
 #define KERNEL_NAME "Aurora"
 #define KERNEL_VERSION "0.0.1"
 
+#define KERNEL_STACK_SIZE 16 * 1024
+
 #endif
