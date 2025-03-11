@@ -2,8 +2,6 @@
  * Copyright 2025 linliangjun
  */
 
-void abort(void)
+void __abort(void)
 {
-    while (1)
-        ;
 }

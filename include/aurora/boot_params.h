@@ -9,6 +9,9 @@
 
 #include "aurora/types.h"
 
+#define MMAP_TYPE_UNUSED 1 // 未使用
+#define MMAP_TYPE_RESV 2   // 保留
+
 typedef struct
 {
     u32 base_low;
