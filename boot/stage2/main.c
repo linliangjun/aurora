@@ -10,6 +10,14 @@
 
 #define half_byte_to_hex(n) (n) < 10 ? (n) + '0' : (n) - 10 + 'a'
 
+typedef struct __attribute__((packed))
+{
+    unsigned int ards_vec_size;
+    ards_t *ards_vec;
+} boot_params_t;
+
+static boot_params_t boot_params;
+
 void btox(unsigned char n, char *str)
 {
     *str++ = half_byte_to_hex(n >> 8);
@@ -45,6 +53,9 @@ __attribute__((noreturn)) void main(unsigned char driver_id)
 
     console_write("Detect mem success.\r\n");
 
+    boot_params.ards_vec_size = ards_vec_size;
+    boot_params.ards_vec = ards_vec;
+
     // 加载内核
     unsigned int kernel_entry;
     code = load_kernel(driver_id, &kernel_entry, ards_vec, ards_vec_size);
@@ -54,6 +65,7 @@ __attribute__((noreturn)) void main(unsigned char driver_id)
 
     // 跳转到内核入口
     __asm__ __volatile__(
+        "push $boot_params\n\t"
         "jmp *%0" : : "a"(kernel_entry));
     while (1)
         ;

@@ -12,6 +12,9 @@
     .text
     .global	    _start
 _start:
+    // 将引导参数保存到 ebx 中
+    pop         %ebx
+
     call        console_init
     call        gdt_init
 
@@ -25,6 +28,10 @@ _start:
     mov         %esp, %ebp
     jmp         $CODE_SEG_SELE, $1f
 1:
+    push        %ebx
+    call        pmm_init
+    add         $4, %esp
+
     call        main
 
     .bss

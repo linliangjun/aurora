@@ -14,6 +14,8 @@ SECTIONS
 {
     . = 0x100000;
 
+    __kernel_start = .;
+
     .text : {
         *(.text);
     } : text
@@ -29,6 +31,8 @@ SECTIONS
     .bss : {
         *(.bss);
     } : bss
+
+    __kernel_end = .;
 
     /DISCARD/ : {
         *(.note.gnu.property);
