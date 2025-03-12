@@ -13,22 +13,18 @@
 #define RANGE_CONTAINS(base, len, start, offset) \
     (start) < (base) ? false : (start) - (base) + (offset) <= (len)
 
-#define PAGE_ADDR(index) (index) * PAGE_SIZE
-#define PAGE_INDEX(addr) (addr) / PAGE_SIZE
-
-#define PAGE_SIZE 4096                                // 页大小
 #define PMM_MAX_SIZE (long long)4096 * 1024 * 1024    // 最大支持的内存大小（4 GiB）
 #define PMM_MAX_PAGE_COUNT (PMM_MAX_SIZE) / PAGE_SIZE // 最大支持的页数量
-
-extern u8 __kernel_start[];
-extern u8 __kernel_end[];
 
 // 物理内存位图
 static u8 pmm_data[PMM_MAX_PAGE_COUNT / 8];
 static bitmap_t pmm_bitmap = {.data = pmm_data};
 
-static u32 kernel_page_start;
-static u32 kernel_page_end;
+static u32 kernel_phys_start;
+static u32 kernel_phys_end;
+
+static u32 kernel_phys_page_start;
+static u32 kernel_phys_page_end;
 
 static void setup_pmm_bitmap(const boot_params_t *boot_params)
 {
@@ -51,9 +47,11 @@ static void setup_pmm_bitmap(const boot_params_t *boot_params)
             bitmap_allocate(&pmm_bitmap, i);
     }
 
-    kernel_page_start = PAGE_INDEX((u32)__kernel_start);
-    kernel_page_end = PAGE_INDEX((u32)__kernel_end) + 1;
-    for (u32 i = kernel_page_start; i < kernel_page_end; i++)
+    kernel_phys_start = PHYS_ADDR((u32)__kernel_start);
+    kernel_phys_end = PHYS_ADDR((u32)__kernel_end);
+    kernel_phys_page_start = PAGE_INDEX(kernel_phys_start);
+    kernel_phys_page_end = PAGE_INDEX(kernel_phys_end) + 1;
+    for (u32 i = kernel_phys_page_start; i < kernel_phys_page_end; i++)
         bitmap_allocate(&pmm_bitmap, i);
 }
 
@@ -68,10 +66,11 @@ static void show_mem_info(const boot_params_t *boot_params)
     }
 
     // 打印内核内存信息
-    pr_info("Kernel in memory start = %#010x, end = %#010x, used = %d Byte\n",
-            __kernel_start, __kernel_end, __kernel_end - __kernel_start);
-    pr_info("Kernel in memory page start = %d, end = %d, count = %d\n",
-            kernel_page_start, kernel_page_end, kernel_page_end - kernel_page_start);
+    pr_info("Kernel in phys memory start = %#010x, end = %#010x, used = %d Byte\n",
+            kernel_phys_start, kernel_phys_end, kernel_phys_end - kernel_phys_start);
+    pr_info("Kernel in phys memory page start = %d, end = %d, count = %d\n",
+            kernel_phys_page_start, kernel_phys_page_end, kernel_phys_page_end - kernel_phys_page_start);
+    pr_info("Kernel in memory start = %#010x, end = %#010x\n", __kernel_start, __kernel_end);
 
     // 打印内存页信息
     pr_info("Phys memory page, total = %d, free = %d, allocated = %d\n",

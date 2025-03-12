@@ -9,9 +9,14 @@
 #include "aurora/gdt.h"
 #include "aurora/kernel.h"
 
-    .text
+    .section    .text.init, "ax"
     .global	    _start
 _start:
+    call        vmm_init
+    jmp         kernel_entry
+
+    .text
+kernel_entry:
     // 将引导参数保存到 ebx 中
     pop         %ebx
 

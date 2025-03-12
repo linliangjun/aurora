@@ -8,6 +8,7 @@
 #define __AURORA_PMM_H
 
 #include "aurora/boot_params.h"
+#include "aurora/mem.h"
 
 void pmm_init(const boot_params_t *boot_params);
 
