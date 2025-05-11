@@ -7,9 +7,11 @@
 #include "tty.h"
 #include "types.h"
 
+#define KERNEL_VERSION "0.0.1"
+
 __attribute__((noreturn)) void main(void)
 {
-    tty_write("The kernel is OK!\n");
+    tty_printf("Kernel version \"%s\" (build %s %s)\n", KERNEL_VERSION, __DATE__, __TIME__);
     while (true)
         ;
 }
