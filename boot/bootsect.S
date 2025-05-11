@@ -18,7 +18,7 @@
 #define CYLINDER_SECTOR(c, s) (((c) << 8) | (((c) >> 2) & 0xc0) | (s))
 #define MBR_MAGIC .org 0x1fe; .byte 0x55, 0xaa
 
-    .globl      _start, tty_write
+    .globl      _start, tty_write_16
 
     .section    .text.startup, "ax"
     .code16
@@ -72,7 +72,7 @@ _start:
 
 3:
     // 打印错误消息
-    TTY_WRITE(error_msg)
+    TTY_WRITE_16(error_msg)
 
     // 无限循环
     jmp         .
@@ -86,7 +86,7 @@ _start:
 1:
     mov         $0xe, %ah
     int         $0x10
-tty_write:
+tty_write_16:
     lodsb
     cmp         $0, %al
     jne         1b

@@ -12,7 +12,7 @@
     .code16
 stage2_entry:
     // 打印消息
-    TTY_WRITE(msg)
+    TTY_WRITE_16(msg)
 
     // 进入 32 位保护模式
     push        $2

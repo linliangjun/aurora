@@ -16,9 +16,9 @@
 #define STAGE2_SECTOR_COUNT 15 // 第二阶段引导扇区数量
 #define STAGE2_ADDR 0x7e00     // 第二阶段引导地址
 
-#define TTY_WRITE(addr) \
-    cld;                \
-    mov $addr, % si;    \
-    call tty_write
+#define TTY_WRITE_16(addr) \
+    cld;                   \
+    mov $addr, % si;       \
+    call tty_write_16
 
 #endif // __BOOT_H
