@@ -6,9 +6,9 @@
 
 #include "string.h"
 
-void *memcpy(void *dest, const void *src, unsigned int n)
+void *memcpy(void *dest, const void *src, size_t n)
 {
-    char *pdest = (char *)dest, *psrc = (char *)src;
+    u8 *pdest = (u8 *)dest, *psrc = (u8 *)src;
     while (n--)
         *pdest++ = *psrc++;
     return dest;
