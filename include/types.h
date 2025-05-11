@@ -17,6 +17,8 @@ typedef signed int i32;
 
 typedef u32 size_t;
 
+typedef u32 uintptr_t;
+
 typedef _Bool bool;
 #define true 1
 #define false 0

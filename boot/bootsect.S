@@ -11,11 +11,11 @@
  * Copyright 2025 linliangjun
  */
 
+#include "boot/bios_call.h"
 #include "boot/boot.h"
 
 #define MAX_ATTEMPTS 3
 
-#define CYLINDER_SECTOR(c, s) (((c) << 8) | (((c) >> 2) & 0xc0) | (s))
 #define MBR_MAGIC .org 0x1fe; .byte 0x55, 0xaa
 
     .globl      _start, tty_write_16
