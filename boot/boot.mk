@@ -1,8 +1,10 @@
-$(BUILD_DIR)/boot/bootsect: boot/bootsect.lds $(BUILD_DIR)/boot/bootsect.o
-	$(LD) -T $< -o $@ $(BUILD_DIR)/boot/bootsect.o
+BOOT_OBJS := $(patsubst boot/%.S,$(BUILD_DIR)/boot/%.o, $(shell find boot -name "*.S"))
 
-$(BUILD_DIR)/boot/bootsect.lock: $(BUILD_DIR)/boot/bootsect.bin
+$(BUILD_DIR)/boot/boot: boot/boot.lds $(BOOT_OBJS)
+	$(LD) -T $< -o $@ $(BOOT_OBJS)
+
+$(BUILD_DIR)/boot/boot.lock: $(BUILD_DIR)/boot/boot.bin
 	dd if=$< of=$(SYSTEM_IMG) conv=notrunc
 	@touch $@
 
-build-boot: $(BUILD_DIR)/boot/bootsect.lock
+build-boot: $(BUILD_DIR)/boot/boot.lock
