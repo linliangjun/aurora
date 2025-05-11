@@ -16,6 +16,8 @@ BOCHSFLAGS := 'cpu: model=pentium' 'megs: 32' \
 	'boot: floppy' \
 	'magic_break: enabled=1'
 ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD -Iinclude
+CFLAGS := -m32 -ffreestanding -Wall -Werror -MD -Iinclude \
+	-march=pentium -fno-pie -fno-asynchronous-unwind-tables -std=c99
 
 include $(shell find ./ \( -name "*.mk" -o -name "*.d" \))
 
@@ -25,6 +27,10 @@ include $(shell find ./ \( -name "*.mk" -o -name "*.d" \))
 $(BUILD_DIR)/%.o: %.S
 	@mkdir -p $(@D)
 	$(CC) -c $(ASMFLAGS) -o $@ $<
+
+$(BUILD_DIR)/%.o: %.c
+	@mkdir -p $(@D)
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%
 	$(OBJCOPY) -O binary $< $@

@@ -1,4 +1,5 @@
 BOOT_OBJS := $(patsubst boot/%.S,$(BUILD_DIR)/boot/%.o, $(shell find boot -name "*.S"))
+BOOT_OBJS += $(patsubst boot/%.c,$(BUILD_DIR)/boot/%.o, $(shell find boot -name "*.c"))
 
 $(BUILD_DIR)/boot/boot: boot/boot.lds $(BOOT_OBJS)
 	$(LD) -T $< -o $@ $(BOOT_OBJS)

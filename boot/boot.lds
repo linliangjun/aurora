@@ -6,6 +6,7 @@ ENTRY(_start)
 PHDRS
 {
     text PT_LOAD;
+    data PT_LOAD;
     rodata PT_LOAD;
 }
 
@@ -17,6 +18,12 @@ SECTIONS
         *(.text.startup);
         *(.text);
     } : text
+
+    . = ALIGN(16);
+
+    .data : {
+        *(.data);
+    } : data
 
     . = ALIGN(16);
 

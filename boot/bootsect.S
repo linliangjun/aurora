@@ -13,7 +13,6 @@
 
 #include "boot/boot.h"
 
-#define STACK_TOP 0x7c00
 #define MAX_ATTEMPTS 3
 
 #define CYLINDER_SECTOR(c, s) (((c) << 8) | (((c) >> 2) & 0xc0) | (s))
@@ -35,7 +34,7 @@ _start:
     mov         %ax, %ds
     mov         %ax, %es
     mov         %ax, %ss
-    mov         $STACK_TOP, %sp
+    mov         $REAL_STACK_INIT, %sp
 
     // 重新开启中断
     sti
