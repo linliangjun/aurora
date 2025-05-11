@@ -22,6 +22,8 @@ Aurora 是一个基于 IA32 指令集架构的操作系统。
 以 MacOS 为例，env.mk 如下：
 
 ```makefile
+BINUTILS_PREFIX := x86_64-elf-
+CC_PREFIX := x86_64-elf-
 BOCHSFLAGS += 'display_library: sdl2'
 ```
 

@@ -4,6 +4,9 @@ SYSTEM_IMG := $(BUILD_DIR)/aurora.img
 
 QEMU_SYSTEM_I386 = $(QEMU_SYSTEM_I386_PREFIX)qemu-system-i386
 BOCHS = $(BOCHS_PREFIX)bochs
+CC = $(CC_PREFIX)gcc
+LD = $(BINUTILS_PREFIX)ld
+OBJCOPY = $(BINUTILS_PREFIX)objcopy
 
 QEMUFLAGS := -cpu pentium -m 32M \
 	-drive if=floppy,format=raw,file=$(SYSTEM_IMG) \
@@ -12,17 +15,25 @@ BOCHSFLAGS := 'cpu: model=pentium' 'megs: 32' \
 	'floppya: 1_44=$(SYSTEM_IMG), status=inserted' \
 	'boot: floppy' \
 	'magic_break: enabled=1'
+ASMFLAGS := -m32 -ffreestanding -Wall -Werror
 
 include $(shell find ./ -name "*.mk")
 
 .DEFAULT_GOAL := all
 .PHONY: all clean qemu bochs
 
+$(BUILD_DIR)/%.o: %.S
+	@mkdir -p $(@D)
+	$(CC) -c $(ASMFLAGS) -o $@ $<
+
+$(BUILD_DIR)/%.bin: $(BUILD_DIR)/%
+	$(OBJCOPY) -O binary $< $@
+
 $(SYSTEM_IMG):
 	@mkdir -p $(@D)
 	dd if=/dev/zero of=$@ count=2880
 
-all: $(SYSTEM_IMG)
+all: $(SYSTEM_IMG) build-boot
 
 clean:
 	rm -rf $(BUILD_DIR)
