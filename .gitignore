@@ -1,0 +1,16 @@
+# Visual Studio Code
+.vscode
+
+# Jetbrains Clion
+.idea
+
+# Mac OS
+.DS_Store
+
+# Bochs
+.bochsrc
+bx_enh_dbg.ini
+
+# Make
+build
+env.mk
