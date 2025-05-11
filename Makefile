@@ -15,9 +15,9 @@ BOCHSFLAGS := 'cpu: model=pentium' 'megs: 32' \
 	'floppya: 1_44=$(SYSTEM_IMG), status=inserted' \
 	'boot: floppy' \
 	'magic_break: enabled=1'
-ASMFLAGS := -m32 -ffreestanding -Wall -Werror
+ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD -Iinclude
 
-include $(shell find ./ -name "*.mk")
+include $(shell find ./ \( -name "*.mk" -o -name "*.d" \))
 
 .DEFAULT_GOAL := all
 .PHONY: all clean qemu bochs
