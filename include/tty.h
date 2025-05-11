@@ -14,4 +14,6 @@
  */
 void tty_write(const char *msg);
 
+void tty_printf(const char *fmt, ...);
+
 #endif // __TTY_H
