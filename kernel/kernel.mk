@@ -1,4 +1,5 @@
 KERNEL_OBJS := $(patsubst kernel/%.S,$(BUILD_DIR)/kernel/%.o, $(shell find kernel -name "*.S"))
+KERNEL_OBJS += $(patsubst kernel/%.c,$(BUILD_DIR)/kernel/%.o, $(shell find kernel -name "*.c"))
 
 $(BUILD_DIR)/kernel/kernel: kernel/kernel.lds $(KERNEL_OBJS)
 	$(LD) -T $< -o $@ $(KERNEL_OBJS)

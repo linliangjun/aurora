@@ -4,7 +4,8 @@
  * Copyright 2025 linliangjun
  */
 
-    .text
     .global	    _start
+
+    .section    .text.startup, "ax"
 _start:
-    jmp         .
+    jmp         main
