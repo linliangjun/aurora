@@ -14,3 +14,6 @@ bx_enh_dbg.ini
 # Make
 build
 env.mk
+
+# GDB
+/.gdbinit

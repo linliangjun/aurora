@@ -16,6 +16,11 @@
 #define STAGE2_SECTOR_COUNT 15 // 第二阶段引导扇区数量
 #define STAGE2_ADDR 0x7e00     // 第二阶段引导地址
 
+#define KERNEL_LBA 32           // 内核逻辑扇区号
+#define KERNEL_SECTOR_COUNT 200 // 内核扇区数量
+#define KERNEL_ADDR 0x100000    // 内核地址
+#define KERNEL_ENTRY 0x100000   // 内核入口
+
 #define TTY_WRITE_16(addr) \
     cld;                   \
     mov $addr, % si;       \
