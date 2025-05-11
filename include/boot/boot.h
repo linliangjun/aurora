@@ -7,6 +7,9 @@
 #ifndef __BOOT_H
 #define __BOOT_H
 
+#define REAL_STACK_INIT 0x7c00  // 16 位实地址模式初始栈
+#define PROT_STACK_INIT 0x90000 // 32 位保护模式初始栈
+
 #define STAGE2_CYLINDER 0      // 第二阶段引导起始柱面号
 #define STAGE2_HEAD 0          // 第二阶段引导起始磁头号
 #define STAGE2_SECTOR 2        // 第二阶段引导起始扇区号
