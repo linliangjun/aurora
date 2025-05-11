@@ -7,6 +7,8 @@
 #ifndef __STRING_H
 #define __STRING_H
 
-void *memcpy(void *dest, const void *src, unsigned int n);
+#include "types.h"
+
+void *memcpy(void *dest, const void *src, size_t n);
 
 #endif // __STRING_H

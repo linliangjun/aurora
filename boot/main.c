@@ -5,10 +5,11 @@
  */
 
 #include "tty.h"
+#include "types.h"
 
-__attribute__((noreturn)) void main(unsigned char drive_id)
+__attribute__((noreturn)) void main(u8 drive_id)
 {
     tty_write("The second stage main is OK!\r\n");
-    while (1)
+    while (true)
         ;
 }
