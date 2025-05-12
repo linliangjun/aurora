@@ -5,6 +5,7 @@ PHDRS
 {
     text PT_LOAD;
     rodata PT_LOAD;
+    bss PT_LOAD;
 }
 
 ENTRY(_start)
@@ -23,6 +24,12 @@ SECTIONS
     .rodata : {
         *(.rodata);
     } : rodata
+
+    . = ALIGN(4K);
+
+    .bss : {
+        *(.bss);
+    } : bss
 
     /DISCARD/ : {
         *(.note.gnu.property);
