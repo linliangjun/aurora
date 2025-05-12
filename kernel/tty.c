@@ -138,15 +138,3 @@ void tty_write(const char *msg)
     }
     set_cursor_pos(&pos);
 }
-
-void tty_printf(const char *fmt, ...)
-{
-    char buf[1024];
-
-    va_list args;
-    va_start(args, fmt);
-    vsprintf(buf, fmt, args);
-    va_end(args);
-
-    tty_write(buf);
-}
