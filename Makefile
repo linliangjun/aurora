@@ -18,7 +18,8 @@ BOCHSFLAGS := 'cpu: model=pentium' 'megs: 32' \
 	'magic_break: enabled=1'
 ASMFLAGS := -m32 -ffreestanding -Wall -Werror -MD -Iinclude -g -D__ASSEMBLY__
 CFLAGS := -m32 -ffreestanding -Wall -Werror -MD -Iinclude -g \
-	-march=pentium -fno-pie -fno-asynchronous-unwind-tables -fno-stack-protector -std=c99
+	-march=pentium -fno-pie -fno-asynchronous-unwind-tables -fno-stack-protector -std=c99 \
+	-mgeneral-regs-only
 
 include $(shell find ./ \( -name "*.mk" -o -name "*.d" \))
 

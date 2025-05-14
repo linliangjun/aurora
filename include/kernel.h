@@ -14,6 +14,7 @@
 #define KERNEL_STACK_SIZE (16 * 1024)
 
 #define GDT_ENTRY_COUNT 128 // GDT 条目数量
+#define IDT_ENTRY_COUNT 32  // IDT 条目数量
 
 #ifdef __ASSEMBLY__
 
