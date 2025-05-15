@@ -76,4 +76,9 @@ void idt_init(void);
  */
 void idt_set_desc(u8 vector, const gate_desc_t *desc);
 
+/**
+ * 设置中断门描述符
+ */
+void set_interrupt_gate_desc(u8 vector, const interrupt_gate_desc_t *desc);
+
 #endif // __IDT_H
