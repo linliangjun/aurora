@@ -30,14 +30,6 @@ EXCEPTION_HANDLER(0x00, "Divide Error")
 EXCEPTION_HANDLER_WITH_CODE(0x08, "Double Fault")
 EXCEPTION_HANDLER_WITH_CODE(0x0d, "General Protection")
 
-static void set_interrupt_gate_desc(u8 vector, const interrupt_gate_desc_t *desc)
-{
-    idt_set_desc(vector, (gate_desc_t *)desc);
-    PR_DEBUG("Set IDT[%d], seg_sele: {rpl: %d, ti: %d, index: %d}, offset: %#010x, type: %04b, dpl: %d, p: %d\n",
-             vector, desc->seg_sele.rpl, desc->seg_sele.ti, desc->seg_sele.index,
-             (desc->offset_high << 16) | desc->offset_low, desc->type, desc->dpl, desc->p);
-}
-
 #define SET_EXCEPTION_HANDLER(vector) \
     set_interrupt_gate_desc(vector, &INTERRUPT_GATE_DESC(CODE_SEG_SELE, (uintptr_t)exception_handler_##vector, GATE_TYPE_INTERRUPT_32, 0, true))
 
@@ -63,4 +55,12 @@ void idt_set_desc(u8 vector, const gate_desc_t *desc)
 {
     ASSERT(vector < IDT_ENTRY_COUNT, "Vector out of bound!");
     memcpy(idt + vector, desc, sizeof(gate_desc_t));
+}
+
+void set_interrupt_gate_desc(u8 vector, const interrupt_gate_desc_t *desc)
+{
+    idt_set_desc(vector, (gate_desc_t *)desc);
+    PR_DEBUG("Set IDT[%d], seg_sele: {rpl: %d, ti: %d, index: %d}, offset: %#010x, type: %04b, dpl: %d, p: %d\n",
+             vector, desc->seg_sele.rpl, desc->seg_sele.ti, desc->seg_sele.index,
+             (desc->offset_high << 16) | desc->offset_low, desc->type, desc->dpl, desc->p);
 }
