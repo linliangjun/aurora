@@ -20,6 +20,8 @@
 #define PIC_MASTER_IRQ_VECTOR 32                         // 主片 IRQ 起始向量号
 #define PIC_SLAVE_IRQ_VECTOR (PIC_MASTER_IRQ_VECTOR) + 8 // 从片 IRQ 起始向量号
 
+#define JIFFY 10 // IRQ 0 产生间隔，单位：毫秒
+
 #ifdef __ASSEMBLY__
 
 #define CODE_SEG_SELE SEG_DESC_SELE(1, 0, 0)

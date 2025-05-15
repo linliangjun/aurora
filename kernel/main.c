@@ -6,11 +6,13 @@
 
 #include "kernel.h"
 #include "pic.h"
+#include "pit.h"
 #include "printk.h"
 
 static void kernel_init(void) {
     idt_init();
     pic_init();
+    pit_init();
 }
 
 __attribute__((noreturn)) void main(void)
