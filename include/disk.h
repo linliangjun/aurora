@@ -9,6 +9,8 @@
 
 #include "types.h"
 
+#define SECTOR_SIZE 512 // 扇区大小（单位：字节）
+
 /**
  * 读取磁盘扇区
  *

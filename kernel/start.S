@@ -8,7 +8,7 @@
 
     .global	    _start
 
-    .section    .text.startup, "ax"
+    .text
 _start:
     // 初始化 GDT
     call        gdt_init
