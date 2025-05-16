@@ -16,6 +16,7 @@ typedef signed short i16;
 typedef signed int i32;
 
 #define I32_MAX 0x7fffffff
+#define U8_MAX 0xff
 
 typedef u32 size_t;
 

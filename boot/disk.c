@@ -10,7 +10,6 @@
 #include "string.h"
 
 #define SECTOR_COUNT_PER_READ 4 // 每次读取扇区数量
-#define SECTOR_SIZE 512         // 扇区大小（单位：字节）
 
 /* 驱动器信息 */
 typedef struct
