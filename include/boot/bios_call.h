@@ -45,6 +45,17 @@ u8 int_13h_02h(u8 drive_id, u16 cylinder_sector, u8 head, u8 count, u16 seg, u16
  */
 u8 int_13h_08h(u8 drive_id, u16 *max_cylinder_sector, u8 *max_head);
 
+/**
+ * 获取内存布局
+ *
+ * @param next 后续值，首次调用置 0
+ * @param seg ARDS 缓冲区段地址
+ * @param offset ARDS 缓冲区偏移地址
+ *
+ * @return 错误码，0 表示正常
+ */
+u8 int_15h_e820h(u32 *next, u16 seg, u16 offset);
+
 #endif
 
 #endif // __BOOT_BIOS_CALL_H

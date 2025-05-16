@@ -4,7 +4,7 @@
  * Copyright 2025 linliangjun
  */
 
-    .globl      int_10h_0eh, int_13h_02h, int_13h_08h
+    .globl      int_10h_0eh, int_13h_02h, int_13h_08h, int_15h_e820h
 
     .text
 int_10h_0eh:
@@ -107,6 +107,67 @@ int_13h_08h:
     pop        %cx
     mov        12(%ebp), %eax
     mov        %cx, (%eax)
+
+    // 返回
+    pop        %ax
+    leave
+    ret
+
+
+int_15h_e820h:
+    .code32
+    push        %ebp
+    mov         %esp, %ebp
+
+    // 获取后续值
+    mov         8(%ebp), %eax
+    mov         (%eax), %eax
+    push        %eax
+
+    // 进入 16 位实地址模式
+    push        $24
+    call        prot_to_real
+    .code16
+
+    // 调用 BIOS 中断 int 0x15 0xe820
+    push        %ebx
+    push        %di
+    mov         $0xe820, %eax
+    mov         (%bp), %ebx
+    mov         $20, %ecx
+    mov         $0x534d4150, %edx
+    mov         16(%bp), %di
+    mov         %di, %es
+    mov         20(%bp), %di
+    int         $0x15
+
+    // 将后续值保存在 edx 中
+    mov         %ebx, %edx
+
+    pop         %di
+    pop         %ebx
+
+    // 保存错误码
+    jc          1f
+    xor         %ax, %ax
+    jmp         2f
+1:
+    mov         $1, %ax
+2:
+    push        %ax
+
+    // 保存参数
+    push        %edx
+
+    // 进入 32 位保护模式
+    push       $6
+    call       real_to_prot
+    .code32
+
+    // 设置参数
+    pop        %edx
+    mov        8(%ebp), %eax
+    mov        %edx, (%eax)
 
     // 返回
     pop        %ax
