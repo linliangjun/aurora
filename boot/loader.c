@@ -29,11 +29,29 @@ static u8 load_kernel_phdr(u8 drive_id, u32 offset, elf32_phdr_t *phdr)
     return code;
 }
 
-static u8 load_kernel_segment(u8 drive_id, const elf32_phdr_t *phdr)
+static u8 load_kernel_segment(u8 drive_id, const elf32_phdr_t *phdr, const mmap_t *mmap_vec, size_t mmap_vec_size)
 {
     // 非 PT_LOAD 类型的段，跳过
     if (phdr->p_type != PT_LOAD)
         return 0;
+
+    // 判断段载入的内存是否可用
+    bool available = false;
+    u32 segment_start = phdr->p_paddr, segment_end = segment_start + phdr->p_memsz;
+    for (size_t i = 0; i < mmap_vec_size; i++)
+    {
+        const mmap_t *mmap = mmap_vec + i;
+        if (mmap->type != MMAP_TYPE_UNUSED)
+            continue;
+        u32 mmap_start = mmap->base, mmap_end = mmap_start + mmap->len;
+        if (segment_start >= mmap_start && segment_start < mmap_end && segment_end <= mmap_end)
+        {
+            available = true;
+            break;
+        }
+    }
+    if (!available)
+        return 1;
 
     // count 表示已加载的字节数量，buf 表示缓冲区
     u32 count = 0;
@@ -92,7 +110,7 @@ static u8 load_kernel_segment(u8 drive_id, const elf32_phdr_t *phdr)
     return 0;
 }
 
-u8 load_kernel(u8 drive_id, u32 *kernel_entry)
+u8 load_kernel(u8 drive_id, uintptr_t *kernel_entry, const mmap_t *mmap_vec, size_t mmap_vec_size)
 {
     // 加载文件头
     elf32_ehdr_t ehdr;
@@ -110,7 +128,7 @@ u8 load_kernel(u8 drive_id, u32 *kernel_entry)
             return code;
 
         // 加载段
-        code = load_kernel_segment(drive_id, &phdr);
+        code = load_kernel_segment(drive_id, &phdr, mmap_vec, mmap_vec_size);
         if (code)
             return code;
     }

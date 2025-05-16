@@ -8,6 +8,7 @@
 #define __BOOT_LOADER_H
 
 #include "types.h"
+#include "boot/mem.h"
 
 /**
  * 加载内核
@@ -17,6 +18,6 @@
  *
  * @return 错误码，0 表示正常
  */
-u8 load_kernel(u8 drive_id, uintptr_t *kernel_entry);
+u8 load_kernel(u8 drive_id, uintptr_t *kernel_entry, const mmap_t *mmap_vec, size_t mmap_vec_size);
 
 #endif // __BOOT_LOADER_H
