@@ -10,6 +10,9 @@
 
     .text
 _start:
+    // 将引导信息保存到 ebx 中
+    pop         %ebx
+
     // 初始化 GDT
     call        gdt_init
 
@@ -24,7 +27,8 @@ _start:
     mov         %esp, %ebp
     jmp         $CODE_SEG_SELE, $1f
 1:
-    jmp         main
+    push        %ebx
+    call        main
 
     .bss
     .align      16
