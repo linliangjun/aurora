@@ -4,18 +4,21 @@
  * Copyright 2025 linliangjun
  */
 
+#include "boot/boot_info.h"
 #include "boot/loader.h"
 #include "boot/mem.h"
 #include "tty.h"
 
+static mmap_t mmap[20];
+static boot_info_t boot_info = {.mmap = mmap};
+
 __attribute__((noreturn)) void main(u8 drive_id)
 {
     tty_write("The second stage main is OK!\r\n");
+    boot_info.drive_id = drive_id;
 
     // 获取内存布局
-    mmap_t mmap_vec[20];
-    size_t mmap_vec_size;
-    u8 code = detect_mem(mmap_vec, &mmap_vec_size);
+    u8 code = detect_mem(mmap, &boot_info.mmap_size);
     if (code)
     {
         tty_write("Detect memory failed.\r\n");
@@ -26,13 +29,14 @@ __attribute__((noreturn)) void main(u8 drive_id)
 
     // 加载内核
     uintptr_t kernel_entry;
-    code = load_kernel(drive_id, &kernel_entry, mmap_vec, mmap_vec_size);
+    code = load_kernel(drive_id, &kernel_entry, mmap, boot_info.mmap_size);
     if (!code)
     {
         tty_write("Load kernel success.\r\n");
 
         // 跳转到内核入口
         __asm__ __volatile__(
+            "push $boot_info\n\t"
             "jmp *%0" : : "a"(kernel_entry));
     }
 
