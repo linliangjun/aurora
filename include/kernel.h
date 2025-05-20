@@ -34,4 +34,8 @@
 
 #endif
 
+#define PAGE_SIZE 4096                                  // 页大小
+#define PMM_MAX_SIZE ((u64)32 * 1024 * 1024)            // 最大支持的内存大小（32 MiB）
+#define PMM_MAX_PAGE_COUNT ((PMM_MAX_SIZE) / PAGE_SIZE) // 最大支持的页数量
+
 #endif // __KERNEL_H
