@@ -9,4 +9,6 @@
 
 #define MIN(a, b) ((a) > (b) ? (b) : (a))
 
+#define DIV_ROUND_UP(n, d) ((n) + (d) - 1) / (d)
+
 #endif // __MATH_H
