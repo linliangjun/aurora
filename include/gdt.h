@@ -19,4 +19,11 @@ void gdt_init(void);
  */
 void gdt_set_desc(u16 index, const seg_desc_t *desc);
 
+/**
+ * 设置全局段描述符
+ *
+ * @return 段描述符索引
+ */
+u16 gdt_set_desc_auto(const seg_desc_t *desc);
+
 #endif // __GDT_H

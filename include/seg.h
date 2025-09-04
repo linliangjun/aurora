@@ -10,6 +10,7 @@
 /* 描述符类型 */
 #define SEG_DESC_TYPE_WRITEABLE_DATA 0b0010 // 可写数据段
 #define SEG_DESC_TYPE_CODE 0b1000           // 代码段
+#define SEG_DESC_TYPE_TASK 0b1001           // 任务段
 
 /**
  * 描述符访问类型
