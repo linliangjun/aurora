@@ -8,10 +8,20 @@
 
     .global	    _start
 
-    .text
+.section .hhk_init.text, "ax"
 _start:
     // 将引导信息保存到 ebx 中
     pop         %ebx
+
+    // 初始化高半核（设置页表并启用分页）
+    call        hhk_init
+
+    // 跳转到高地址内核入口
+    mov         $_kernel_start, %eax
+    jmp         *%eax
+
+    .text
+_kernel_start:
 
     // 初始化 GDT
     call        gdt_init

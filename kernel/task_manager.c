@@ -70,6 +70,13 @@ static u8 task_bitmap_data[DIV_ROUND_UP(TASK_MAX_COUNT, 8)];
 static bitmap_t task_bitmap = {.data = task_bitmap_data};
 size_t current_task_index;
 
+static u32 get_cr3(void)
+{
+    u32 cr3;
+    __asm__ volatile("mov %%cr3, %0" : "=r"(cr3));
+    return cr3;
+}
+
 void task_manager_init(void)
 {
     bitmap_init(&task_bitmap, TASK_MAX_COUNT);
@@ -79,6 +86,7 @@ void task_manager_init(void)
     current_task_index = 0;
     task_t *task = tasks;
     tss_t *tss = &task->tss;
+    tss->cr3 = get_cr3();
 
     // 设置 TSS 描述符
     task->gdt_index = gdt_set_desc_auto(&SEG_DESC((uintptr_t)tss, sizeof(tss_t) - 1, SEG_DESC_ACCESS(1, 0, 0, SEG_DESC_TYPE_TASK), SEG_DESC_FLAGS(0, 1, 0)));
@@ -108,6 +116,7 @@ uintptr_t task_spawn(uintptr_t entry_point)
     task_t *task = tasks + task_index;
     memset(task, 0, sizeof(task_t));
     tss_t *tss = &task->tss;
+    tss->cr3 = get_cr3();
 
     // 分配栈（4 KiB）
     size_t page_index = pmm_allocate_page();

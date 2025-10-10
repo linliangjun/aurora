@@ -12,4 +12,7 @@
 
 #define DIV_ROUND_UP(n, d) ((n) + (d) - 1) / (d)
 
+#define RANGE_CONTAINS(base, len, start, offset) \
+    ((start) < (base) ? false : (start) - (base) + (offset) <= (len))
+
 #endif // __MATH_H
