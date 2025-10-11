@@ -24,7 +24,10 @@ typedef u32 size_t;
 
 typedef u32 uintptr_t;
 
+#ifndef __cplusplus
 typedef _Bool bool;
+#endif
+
 #define true 1
 #define false 0
 
