@@ -46,10 +46,18 @@
 #define DATA_SEG_SELE (seg_desc_sele_t){.rpl = 0, .ti = 0, .index = 2}
 
 /* 内核起始和结束位置 */
+extern u8 __hhk_init_bss_start[]; // hhk_init_bss 起始地址
+extern u8 __hhk_init_bss_end[];   // hhk_init_bss 结束地址（不包含）
+
 extern u8 __kernel_start[];      // 内核虚拟起始地址
 extern u8 __kernel_end[];        // 内核虚拟结束地址（不包含）
 extern u8 __kernel_phys_start[]; // 内核物理起始地址
 extern u8 __kernel_phys_end[];   // 内核物理结束地址（不包含）
+
+#define HHK_INIT_BSS_SIZE ((size_t)(__hhk_init_bss_end - __hhk_init_bss_start))   // hhk_init_bss 实际大小
+#define HHK_INIT_BSS_PAGE_COUNT (DIV_ROUND_UP(HHK_INIT_BSS_SIZE, PAGE_SIZE))      // hhk_init_bss 物理页数量
+#define HHK_INIT_BSS_PAGE_START PAGE_INDEX((uintptr_t)__hhk_init_bss_start)       // hhk_init_bss 物理起始页索引
+#define HHK_INIT_BSS_PAGE_END (HHK_INIT_BSS_PAGE_START + HHK_INIT_BSS_PAGE_COUNT) // hhk_init_bss 物理结束页索引（不包含）
 
 #define KERNEL_SIZE ((size_t)(__kernel_end - __kernel_start))             // 内核实际大小
 #define KERNEL_PAGE_COUNT (DIV_ROUND_UP(KERNEL_SIZE, PAGE_SIZE))          // 内核实际页数量

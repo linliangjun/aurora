@@ -23,9 +23,13 @@ SECTIONS
 
     . = ALIGN(4K);
 
+    __hhk_init_bss_start = .;
+
     .hhk_init_bss : {
         *(.hhk_init.bss);
     } : hhk_init_bss
+
+    __hhk_init_bss_end = .;
 
     . = ALIGN(4K);
 

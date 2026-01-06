@@ -45,6 +45,8 @@ void pmm_init(mmap_t *mmap, size_t mmap_size)
     }
 
     // 将内核占用的物理页标记为已分配
+    for (size_t i  = HHK_INIT_BSS_PAGE_START; i < HHK_INIT_BSS_PAGE_END; i++)
+        bitmap_allocate(&pmm_bitmap, i);
     for (size_t i = KERNEL_PHYS_PAGE_START; i < KERNEL_PHYS_PAGE_END; i++)
         bitmap_allocate(&pmm_bitmap, i);
 
