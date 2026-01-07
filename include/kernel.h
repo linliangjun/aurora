@@ -65,6 +65,8 @@ extern u8 __kernel_phys_end[];   // 内核物理结束地址（不包含）
 
 #define KERNEL_HEAP_PAGE_COUNT 512 // 内核堆页数量
 
+#define KEYBOARD_BUFFER_SIZE 256 // 键盘缓冲区大小
+
 #endif
 
 #endif // __KERNEL_H
