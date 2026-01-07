@@ -9,9 +9,7 @@
 #include "kernel.h"
 #include "heap.h"
 #include "string.h"
-#include "bitmap.h"
-#include "math.h"
-#include "panic.h"
+#include "printk.h"
 
 /**
  * TSS 结构体
@@ -59,16 +57,18 @@ typedef struct __attribute__((packed))
 /**
  * 任务结构体
  */
-typedef struct
+typedef struct _task
 {
-    u16 gdt_index; // GDT 索引
-    tss_t tss;     // TSS
+    size_t id;          // 任务 ID
+    u16 gdt_index;      // GDT 索引
+    tss_t tss;          // TSS
+    struct _task *next; // 下一个任务的指针
 } task_t;
 
-static task_t tasks[TASK_MAX_COUNT];
-static u8 task_bitmap_data[DIV_ROUND_UP(TASK_MAX_COUNT, 8)];
-static bitmap_t task_bitmap = {.data = task_bitmap_data};
-size_t current_task_index;
+static task_t *kernel_task;
+static task_t *current_task;
+
+static size_t task_count = 0;
 
 static u32 get_cr3(void)
 {
@@ -79,42 +79,32 @@ static u32 get_cr3(void)
 
 void task_manager_init(void)
 {
-    bitmap_init(&task_bitmap, TASK_MAX_COUNT);
-
     // 创建内核 TSS
-    bitmap_allocate(&task_bitmap, 0);
-    current_task_index = 0;
-    task_t *task = tasks;
-    tss_t *tss = &task->tss;
+    kernel_task = heap_kmalloc(sizeof(task_t));
+    memset(kernel_task, 0, sizeof(task_t));
+
+    kernel_task->id = task_count++;
+    kernel_task->next = 0;
+    tss_t *tss = &kernel_task->tss;
     tss->cr3 = get_cr3();
 
     // 设置 TSS 描述符
-    task->gdt_index = gdt_set_desc_auto(&SEG_DESC((uintptr_t)tss, sizeof(tss_t) - 1, SEG_DESC_ACCESS(1, 0, 0, SEG_DESC_TYPE_TASK), SEG_DESC_FLAGS(0, 1, 0)));
-    __asm__ __volatile__("ltr %0" : : "r"(task->gdt_index << 3)); // TI=0, RPL=0
+    kernel_task->gdt_index = gdt_set_desc_auto(&SEG_DESC((uintptr_t)tss, sizeof(tss_t) - 1, SEG_DESC_ACCESS(1, 0, 0, SEG_DESC_TYPE_TASK), SEG_DESC_FLAGS(0, 1, 0)));
+    __asm__ __volatile__("ltr %0" : : "r"(kernel_task->gdt_index << 3)); // TI=0, RPL=0
+
+    current_task = kernel_task;
 
     PR_INFO("Task Manager Initialized\n");
 }
 
-uintptr_t task_spawn(uintptr_t entry_point)
+size_t task_spawn(uintptr_t entry_point)
 {
-    bool found = false;
-    size_t task_index = 0;
-    for (size_t i = 0; i < task_bitmap.total; i++)
-    {
-        if (bitmap_get(&task_bitmap, i))
-            continue;
-        bitmap_allocate(&task_bitmap, i);
-        task_index = i;
-        found = true;
-        break;
-    }
-    if (!found)
-    {
-        PANIC("No free task slot\n");
-    }
-
-    task_t *task = tasks + task_index;
+    task_t *task = heap_kmalloc(sizeof(task_t));
     memset(task, 0, sizeof(task_t));
+
+    task->id = task_count++;
+    task->next = current_task->next;
+    current_task->next = task;
     tss_t *tss = &task->tss;
     tss->cr3 = get_cr3();
 
@@ -132,30 +122,7 @@ uintptr_t task_spawn(uintptr_t entry_point)
 
     // 设置 GDT 描述符
     task->gdt_index = gdt_set_desc_auto(&SEG_DESC((uintptr_t)tss, sizeof(tss_t) - 1, SEG_DESC_ACCESS(1, 0, 0, SEG_DESC_TYPE_TASK), SEG_DESC_FLAGS(0, 1, 0)));
-    return task_index;
-}
-
-static size_t find_next_task_index(void)
-{
-    // 从当前任务 + 1 开始查找
-    for (size_t i = current_task_index + 1; i < task_bitmap.total; i++)
-    {
-        if (bitmap_get(&task_bitmap, i))
-        {
-            if (current_task_index != i)
-                return i;
-        }
-    }
-    // 从头开始查找，直到当前任务
-    for (size_t i = 0; i < current_task_index; i++)
-    {
-        if (bitmap_get(&task_bitmap, i))
-        {
-            if (current_task_index != i)
-                return i;
-        }
-    }
-    return current_task_index;
+    return task->id;
 }
 
 // 执行远跳转
@@ -181,13 +148,12 @@ static void far_jump(u16 cs, u32 eip)
 
 void task_manager_schedule(void)
 {
-    size_t next_task_index = find_next_task_index();
-    if (next_task_index == current_task_index)
+    task_t *next_task = current_task->next;
+    if (next_task == 0)
+        next_task = kernel_task;
+    if (current_task == next_task)
         return;
-    task_t next_task = tasks[next_task_index];
-
-    u16 tss_selector = (next_task.gdt_index << 3); // TI=0, RPL=0
-
-    current_task_index = next_task_index;
+    u16 tss_selector = (next_task->gdt_index << 3); // TI=0, RPL=0
+    current_task = next_task;
     far_jump(tss_selector, 0);
 }
