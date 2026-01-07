@@ -7,7 +7,7 @@
 #include "task_manager.h"
 #include "gdt.h"
 #include "kernel.h"
-#include "vmm.h"
+#include "heap.h"
 #include "string.h"
 #include "bitmap.h"
 #include "math.h"
@@ -119,8 +119,7 @@ uintptr_t task_spawn(uintptr_t entry_point)
     tss->cr3 = get_cr3();
 
     // 分配栈（4 KiB）
-    size_t page_index = vmm_allocate_kernel_page();
-    tss->esp = tss->esp0 = PAGE_SIZE * (page_index + 1);
+    tss->esp = tss->esp0 = (uintptr_t)heap_kmalloc(4096) + 4096;
     tss->ss = tss->ss0 = DATA_SEG_SELE;
 
     tss->cs = CODE_SEG_SELE;
