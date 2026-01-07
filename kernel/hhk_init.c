@@ -75,6 +75,9 @@ __attribute__((section(".hhk_init.text"))) void hhk_init(void)
     for (size_t i = 0; i < KERNEL_PAGE_COUNT; i++)
         set_pte(&page_table_kernel[i], KERNEL_PHYS_PAGE_START + i, true, false);
 
+    // PDE[1023] 指向自身，最后 4 MiB 的虚拟地址空间用于访问页表
+    set_pde(&pde[1023], (uintptr_t)pde, true, false);
+
     // 启用分页
     enable_paging(pde);
 }

@@ -9,12 +9,14 @@
 #include "pic.h"
 #include "pit.h"
 #include "pmm.h"
+#include "vmm.h"
 #include "printk.h"
 #include "task_manager.h"
 
 static void kernel_init(boot_info_t *boot_info)
 {
     pmm_init(boot_info->mmap, boot_info->mmap_size);
+    vmm_init();
     idt_init();
     pic_init();
     pit_init();

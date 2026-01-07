@@ -63,6 +63,7 @@ extern u8 __kernel_phys_end[];   // 内核物理结束地址（不包含）
 #define KERNEL_PAGE_COUNT (DIV_ROUND_UP(KERNEL_SIZE, PAGE_SIZE))          // 内核实际页数量
 #define KERNEL_PHYS_PAGE_START PAGE_INDEX((uintptr_t)__kernel_phys_start) // 内核物理起始页索引
 #define KERNEL_PHYS_PAGE_END (KERNEL_PHYS_PAGE_START + KERNEL_PAGE_COUNT) // 内核物理结束页索引（不包含）
+#define KERNEL_PAGE_START PAGE_INDEX((uintptr_t)__kernel_start)           // 内核虚拟起始页索引
 
 #endif
 

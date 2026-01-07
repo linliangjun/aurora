@@ -48,4 +48,23 @@ typedef struct __attribute__((packed))
 #define PDE_SIZE 1024      // 页目录项数量
 #define PAGES_PER_PDE 1024 // 每个页目录项可以映射 1024 个页
 
+/**
+ * 初始化虚拟内存管理器
+ */
+void vmm_init(void);
+
+/**
+ * 分配一页内核虚拟内存
+ *
+ * @return 内核虚拟内存页索引
+ */
+size_t vmm_allocate_kernel_page(void);
+
+/**
+ * 回收一页内核虚拟内存
+ *
+ * @param page_index 内核虚拟内存页索引
+ */
+void vmm_free_kernel_page(size_t page_index);
+
 #endif // __VMM_H
