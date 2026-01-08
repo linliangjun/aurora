@@ -13,6 +13,7 @@
 #include "ramfs.h"
 #include "string.h"
 #include "assert.h"
+#include "heap.h"
 
 static char cwd[SHELL_CWD_BUFFER_SIZE] = "/";
 static char cmd_buf[SHELL_CMD_BUFFER_SIZE];
@@ -44,6 +45,58 @@ static void cmd_ls_handler(void)
     tty_write("\n# ");
 }
 
+static void cmd_cat_handler(void)
+{
+    char *name = cmd_buf + 4;
+    char *path = name;
+    bool clear_heap = false;
+    if (*name != '/')
+    {
+        size_t cwd_len = strlen(cwd);
+        size_t path_len = cwd_len + strlen(name) + 1;
+        bool require_separator = false;
+        if (cwd[cwd_len - 1] != '/')
+        {
+            path_len += 1;
+            require_separator = true;
+        }
+        path = heap_kmalloc(path_len);
+        strcpy(path, cwd);
+        if (require_separator)
+            strcat(path, "/");
+        strcat(path, name);
+        clear_heap = true;
+    }
+    ramfs_file_t file = ramfs_open(path);
+    if (file.start_addr == 0)
+    {
+        if (file.is_dir)
+            printk("cat: %s: Is a directory\n", name);
+        else
+            printk("cat: %s: No such file or directory\n", name);
+    }
+    else
+    {
+        size_t remaining_size = file.size - file.offset;
+        if (remaining_size > 0)
+        {
+            size_t buf_size = MIN(SHELL_CAT_BUFFER_SIZE, remaining_size);
+            char *buf = heap_kmalloc(buf_size);
+            while (remaining_size > 0)
+            {
+                size_t read_size = ramfs_read(&file, buf, buf_size - 1);
+                buf[read_size] = '\0';
+                tty_write(buf);
+                remaining_size = file.size - file.offset;
+            }
+            heap_kfree(buf);
+        }
+    }
+    if (clear_heap)
+        heap_kfree(path);
+    tty_write("# ");
+}
+
 static void char_handler(char c)
 {
     char buf[2] = {0, 0};
@@ -54,6 +107,8 @@ static void char_handler(char c)
         cmd_buf[cmd_len] = '\0';
         if (strcmp("ls", cmd_buf) == 0)
             cmd_ls_handler();
+        else if(strncmp("cat ", cmd_buf, 4) == 0)
+            cmd_cat_handler();
         else
             printk("%s: command not found\n# ", cmd_buf);
         cmd_len = 0;

@@ -22,6 +22,10 @@ i32 strncmp(const char *s1, const char *s2, size_t n);
 
 char *strchr(const char *str, char ch);
 
+char *strcat(char *dest, const char *src);
+
+char *strcpy(char *dest, const char *src);
+
 size_t vsprintf(char *buf, const char *fmt, va_list args);
 
 #endif // __STRING_H
