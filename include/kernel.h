@@ -68,6 +68,14 @@ extern u8 __kernel_phys_end[];   // 内核物理结束地址（不包含）
 #define KEYBOARD_BUFFER_SIZE 256 // 键盘缓冲区大小
 
 #define SHELL_CMD_BUFFER_SIZE 256 // Shell 命令缓冲区大小
+#define SHELL_CWD_BUFFER_SIZE 256 // Shell 当前工作目录缓冲区大小
+
+extern u8 _binary_build_ramfs_tar_start[];
+extern u8 _binary_build_ramfs_tar_end[];
+
+#define RAMFS_START ((uintptr_t)_binary_build_ramfs_tar_start)
+#define RAMFS_END ((uintptr_t)_binary_build_ramfs_tar_end)
+#define RAMFS_SIZE ((size_t)(RAMFS_END - RAMFS_START))
 
 #endif
 
