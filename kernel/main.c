@@ -15,12 +15,14 @@
 #include "task_manager.h"
 #include "keyboard.h"
 #include "shell.h"
+#include "ramfs.h"
 
 static void kernel_init(boot_info_t *boot_info)
 {
     pmm_init(boot_info->mmap, boot_info->mmap_size);
     vmm_init();
     heap_init();
+    ramfs_init(RAMFS_START, RAMFS_SIZE);
     idt_init();
     pic_init();
     pit_init();
