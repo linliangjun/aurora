@@ -14,6 +14,7 @@
 #include "printk.h"
 #include "task_manager.h"
 #include "keyboard.h"
+#include "shell.h"
 
 static void kernel_init(boot_info_t *boot_info)
 {
@@ -30,7 +31,7 @@ static void kernel_init(boot_info_t *boot_info)
 __attribute__((noreturn)) void main(boot_info_t *boot_info)
 {
     kernel_init(boot_info);
-    PR_INFO("Kernel version \"%s\" (build %s %s)\n", KERNEL_VERSION, __DATE__, __TIME__);
+    task_spawn((uintptr_t)shell_main);
     while (true)
         task_manager_schedule();
 }
