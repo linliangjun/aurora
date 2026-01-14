@@ -19,14 +19,8 @@ static const void *kheap;
 
 void heap_init(void)
 {
-
-    for (size_t i = 0; i < KERNEL_HEAP_PAGE_COUNT; i++)
-    {
-        if (i == 0)
-           kheap = (void *)PAGE_ADDR(vmm_allocate_kernel_page());
-        else
-            vmm_allocate_kernel_page();
-    }
+    size_t page_index = vmm_allocate_kernel_pages(KERNEL_HEAP_PAGE_COUNT);
+    kheap = (void *)PAGE_ADDR(page_index);
     block_header_t *header = (block_header_t *)kheap;
     header->is_free = true;
     header->size = KERNEL_HEAP_PAGE_COUNT * PAGE_SIZE;

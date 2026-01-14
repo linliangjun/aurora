@@ -24,6 +24,10 @@ bool bitmap_get(bitmap_t *bitmap, size_t index);
 
 void bitmap_allocate(bitmap_t *bitmap, size_t index);
 
+size_t bitmap_allocate_n(bitmap_t *bitmap, size_t n);
+
 void bitmap_free(bitmap_t *bitmap, size_t index);
+
+void bitmap_free_n(bitmap_t *bitmap, size_t index, size_t n);
 
 #endif // __BITMAP_H

@@ -61,14 +61,7 @@ void pmm_init(mmap_t *mmap, size_t mmap_size)
 
 size_t pmm_allocate_page(void)
 {
-    for (size_t i = 0; i < pmm_bitmap.total; i++)
-    {
-        if (bitmap_get(&pmm_bitmap, i))
-            continue;
-        bitmap_allocate(&pmm_bitmap, i);
-        return i;
-    }
-    PANIC("Out of memory!\n");
+    return bitmap_allocate_n(&pmm_bitmap, 1);
 }
 
 void pmm_free_page(size_t page_index)

@@ -54,22 +54,14 @@ static void bind_page(size_t virtual_page_index, size_t phys_page_index, bool us
     invlpg(PAGE_ADDR(virtual_page_index));
 }
 
-size_t vmm_allocate_kernel_page(void)
+size_t vmm_allocate_kernel_pages(size_t n)
 {
-    bool found = false;
-    size_t virtual_page_index = 0;
-    for (size_t i = 0; i < vmm_kernel_bitmap.total; i++)
+    size_t virtual_page_index = bitmap_allocate_n(&vmm_kernel_bitmap, n) + KERNEL_PAGE_START;
+    for (size_t i = 0; i < n; i++)
     {
-        if (bitmap_get(&vmm_kernel_bitmap, i))
-            continue;
-        bitmap_allocate(&vmm_kernel_bitmap, i);
-        virtual_page_index = i + KERNEL_PAGE_START;
-        found = true;
-        break;
+        size_t phys_page_index = pmm_allocate_page();
+        bind_page(virtual_page_index + i, phys_page_index, false);
     }
-    ASSERT(found, "Kernel out of memory!");
-    size_t phys_page_index = pmm_allocate_page();
-    bind_page(virtual_page_index, phys_page_index, false);
     return virtual_page_index;
 }
 
@@ -93,8 +85,9 @@ static void unbind_page(size_t virtual_page_index)
     invlpg(PAGE_ADDR(virtual_page_index));
 }
 
-void vmm_free_kernel_page(size_t virtual_page_index)
+void vmm_free_kernel_pages(size_t page_index, size_t n)
 {
-    bitmap_free(&vmm_kernel_bitmap, virtual_page_index - KERNEL_PAGE_START);
-    unbind_page(virtual_page_index);
+    bitmap_free_n(&vmm_kernel_bitmap, page_index - KERNEL_PAGE_START, n);
+    for (size_t i = 0; i < n; i++)
+        unbind_page(page_index + i);
 }
