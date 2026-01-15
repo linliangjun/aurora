@@ -1,10 +1,6 @@
 KERNEL_OBJS := $(patsubst kernel/%.S,$(BUILD_DIR)/kernel/%.o, $(shell find kernel -name "*.S"))
 KERNEL_OBJS += $(patsubst kernel/%.c,$(BUILD_DIR)/kernel/%.o, $(shell find kernel -name "*.c"))
 
-$(BUILD_DIR)/ramfs.tar: $(shell find rootfs -type f)
-	@mkdir -p $(@D)
-	tar -cvf $@ -C rootfs .
-
 $(BUILD_DIR)/ramfs.o: $(BUILD_DIR)/ramfs.tar
 	@mkdir -p $(@D)
 	$(OBJCOPY) -I binary -O elf32-i386 -B i386 $< $@

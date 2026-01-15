@@ -16,8 +16,8 @@
 #include "keyboard.h"
 #include "shell.h"
 #include "ramfs.h"
-#include "string.h"
 #include "syscall.h"
+#include "elf_loader.h"
 
 static void kernel_init(boot_info_t *boot_info)
 {
@@ -35,22 +35,14 @@ static void kernel_init(boot_info_t *boot_info)
 
 static void create_user_task(void)
 {
-    static const unsigned char code[] = {
-        0xB8, 0x01,0x00,0x00,0x00,      // mov eax, SYS_WRITE
-        0xB9, 0x00,0x00,0x00,0x00,      // mov ecx, <buf>
-        0xCD, 0x80,                     // int 0x80
-        0xEB, 0xFE                      // jmp $
-    };
-
-    void *entry_point = heap_malloc(sizeof(code), true);
-    memcpy(entry_point, code, sizeof(code));
-
-    char msg[] = "User task\n";
-    void *buf = heap_malloc(sizeof(msg), true);
-    memcpy(buf, msg, sizeof(msg));
-    *(uintptr_t *)(entry_point + 6) = (uintptr_t)buf;
-
-    task_spawn((uintptr_t)entry_point, true);
+    uintptr_t entry_point;
+    i32 code = load_elf("user_task", &entry_point);
+    if (code)
+    {
+        printk("Load user task failed: %d\n", code);
+        return;
+    }
+    task_spawn(entry_point, true);
 }
 
 __attribute__((noreturn)) void main(boot_info_t *boot_info)

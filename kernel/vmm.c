@@ -22,18 +22,6 @@ static bitmap_t vmm_kernel_bitmap = {.data = vmm_kernel_data};
 static u8 vmm_user_data[DIV_ROUND_UP(USER_PAGE_MAX_COUNT, 8)];
 static bitmap_t vmm_user_bitmap = {.data = vmm_user_data};
 
-void vmm_init(void)
-{
-    ASSERT(KERNEL_PAGE_MAX_COUNT >= KERNEL_PAGE_COUNT, "Kernel size too large");
-    bitmap_init(&vmm_kernel_bitmap, KERNEL_PAGE_MAX_COUNT);
-    for (size_t i = 0; i < KERNEL_PAGE_COUNT; i++)
-        bitmap_allocate(&vmm_kernel_bitmap, i);
-
-    bitmap_init(&vmm_user_bitmap, USER_PAGE_MAX_COUNT);
-
-    PR_INFO("VMM initialized\n");
-}
-
 static void invlpg(uintptr_t virtual_addr)
 {
     __asm__ __volatile__("invlpg (%0)" : : "r"(virtual_addr) : "memory");
@@ -59,6 +47,23 @@ static void bind_page(size_t virtual_page_index, size_t phys_page_index, bool us
     pte->user = user;
     pte->frame = phys_page_index;
     invlpg(PAGE_ADDR(virtual_page_index));
+}
+
+void vmm_init(void)
+{
+    ASSERT(KERNEL_PAGE_MAX_COUNT >= KERNEL_PAGE_COUNT, "Kernel size too large");
+    bitmap_init(&vmm_kernel_bitmap, KERNEL_PAGE_MAX_COUNT);
+    for (size_t i = 0; i < KERNEL_PAGE_COUNT; i++)
+        bitmap_allocate(&vmm_kernel_bitmap, i);
+
+    bitmap_init(&vmm_user_bitmap, USER_PAGE_MAX_COUNT);
+    for (size_t i = USER_HEAP_PAGE_COUNT; i < USER_PAGE_MAX_COUNT; i++)
+    {
+        size_t phys_page_index = pmm_allocate_page();
+        bind_page(i + USER_PAGE_START, phys_page_index, true);
+    }
+
+    PR_INFO("VMM initialized\n");
 }
 
 size_t vmm_allocate_pages(size_t n, bool user)

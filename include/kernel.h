@@ -84,6 +84,8 @@ extern u8 _binary_build_ramfs_tar_end[];
 #define RAMFS_END ((uintptr_t)_binary_build_ramfs_tar_end)
 #define RAMFS_SIZE ((size_t)(RAMFS_END - RAMFS_START))
 
+#define ELF_LOADER_BUFFER_SIZE 4096 // ELF 加载缓冲区大小
+
 #endif
 
 #endif // __KERNEL_H
