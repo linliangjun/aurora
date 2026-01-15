@@ -23,11 +23,11 @@ static void kernel_init(boot_info_t *boot_info)
     pmm_init(boot_info->mmap, boot_info->mmap_size);
     vmm_init();
     heap_init();
+    task_manager_init();
     ramfs_init(RAMFS_START, RAMFS_SIZE);
     idt_init();
     pic_init();
     pit_init();
-    task_manager_init();
     keyboard_init();
 }
 
@@ -45,5 +45,5 @@ __attribute__((noreturn)) void main(boot_info_t *boot_info)
     create_user_task();
     task_spawn((uintptr_t)shell_main, false);
     while (true)
-        task_manager_schedule();
+        ;
 }

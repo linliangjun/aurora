@@ -9,6 +9,7 @@
 #include "kernel.h"
 #include "pic.h"
 #include "printk.h"
+#include "task_manager.h"
 
 #define IRQ0 0
 #define PIT_CNT0_PORT 0x40
@@ -21,6 +22,7 @@
 __attribute__((interrupt)) static void irq0_handler(const interrupt_frame_t *frame)
 {
     send_eoi(IRQ0);
+    task_manager_schedule();
 }
 
 void pit_init(void)

@@ -9,7 +9,6 @@
 #include "keyboard.h"
 #include "kernel.h"
 #include "tty.h"
-#include "task_manager.h"
 #include "ramfs.h"
 #include "string.h"
 #include "assert.h"
@@ -142,6 +141,5 @@ void shell_main(void)
             if (c >= 0)
                 char_handler(c);
         } while (scancode > 0);
-        task_manager_schedule();
     }
 }
