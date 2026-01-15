@@ -2,9 +2,9 @@
  * Copyright 2025 linliangjun
  */
 
-#include "string.h"
-#include "ctype.h"
-#include "math.h"
+#include "aurora/string.h"
+#include "aurora/ctype.h"
+#include "aurora/math.h"
 
 /**
  * 格式化标识符

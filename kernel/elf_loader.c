@@ -4,12 +4,12 @@
  * Copyright 2026 linliangjun
  */
 
-#include "elf_loader.h"
-#include "ramfs.h"
-#include "vmm.h"
-#include "kernel.h"
-#include "elf32.h"
-#include "string.h"
+#include "aurora/kernel/elf_loader.h"
+#include "aurora/kernel/ramfs.h"
+#include "aurora/kernel/vmm.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/elf32.h"
+#include "aurora/string.h"
 
 i32 load_phdr(elf32_phdr_t *phdr, ramfs_file_t *file, u32 e_phoff)
 {

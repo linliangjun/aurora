@@ -4,20 +4,20 @@
  * Copyright 2025 linliangjun
  */
 
-#include "boot/boot_info.h"
-#include "kernel.h"
-#include "pic.h"
-#include "pit.h"
-#include "pmm.h"
-#include "vmm.h"
-#include "heap.h"
-#include "printk.h"
-#include "task_manager.h"
-#include "keyboard.h"
-#include "shell.h"
-#include "ramfs.h"
-#include "syscall.h"
-#include "elf_loader.h"
+#include "aurora/boot/boot_info.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/kernel/pic.h"
+#include "aurora/kernel/pit.h"
+#include "aurora/kernel/pmm.h"
+#include "aurora/kernel/vmm.h"
+#include "aurora/kernel/heap.h"
+#include "aurora/kernel/printk.h"
+#include "aurora/kernel/task_manager.h"
+#include "aurora/kernel/keyboard.h"
+#include "aurora/kernel/shell.h"
+#include "aurora/kernel/ramfs.h"
+#include "aurora/kernel/syscall_init.h"
+#include "aurora/kernel/elf_loader.h"
 
 static void kernel_init(boot_info_t *boot_info)
 {

@@ -4,10 +4,10 @@
  * Copyright 2025 linliangjun
  */
 
-#include "pmm.h"
-#include "bitmap.h"
-#include "kernel.h"
-#include "panic.h"
+#include "aurora/kernel/pmm.h"
+#include "aurora/kernel/bitmap.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/kernel/panic.h"
 
 // 物理内存位图
 static u8 pmm_data[DIV_ROUND_UP(PMM_MAX_PAGE_COUNT, 8)];

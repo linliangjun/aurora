@@ -4,7 +4,7 @@
  * Copyright 2026 linliangjun
  */
 
-#include "kernel.h"
+#include "aurora/kernel/kernel.h"
 
     .globl syscall_entry
 

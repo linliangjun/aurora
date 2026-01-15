@@ -2,7 +2,7 @@
  * Copyright 2025 linliangjun
  */
 
-#include "string.h"
+#include "aurora/string.h"
 
 char *strcat(char *dest, const char *src)
 {

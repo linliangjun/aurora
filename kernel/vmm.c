@@ -4,12 +4,12 @@
  * Copyright 2026 linliangjun
  */
 
-#include "vmm.h"
-#include "bitmap.h"
-#include "kernel.h"
-#include "assert.h"
-#include "pmm.h"
-#include "string.h"
+#include "aurora/kernel/vmm.h"
+#include "aurora/kernel/bitmap.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/kernel/assert.h"
+#include "aurora/kernel/pmm.h"
+#include "aurora/string.h"
 
 #define PTE(pde_index, pte_index) (0xffc00000 + (pde_index) * PAGE_SIZE + (pte_index) * sizeof(pte_t)) // PTE 指针
 #define PDE(pde_index) PTE(1023, pde_index) // PDE 指针

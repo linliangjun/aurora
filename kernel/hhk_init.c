@@ -4,8 +4,8 @@
  * Copyright 2025 linliangjun
  */
 
-#include "kernel.h"
-#include "vmm.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/kernel/vmm.h"
 
 // 页目录表
 static pde_t pde[PDE_SIZE] __attribute__((aligned(PAGE_SIZE), section(".hhk_init.bss")));

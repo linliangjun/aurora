@@ -4,12 +4,12 @@
  * Copyright 2025 linliangjun
  */
 
-#include "boot/loader.h"
-#include "boot/boot.h"
-#include "disk.h"
-#include "elf32.h"
-#include "math.h"
-#include "string.h"
+#include "aurora/boot/loader.h"
+#include "aurora/boot/boot.h"
+#include "aurora/boot/disk.h"
+#include "aurora/elf32.h"
+#include "aurora/math.h"
+#include "aurora/string.h"
 
 static u8 load_kernel_ehdr(u8 drive_id, elf32_ehdr_t *ehdr)
 {

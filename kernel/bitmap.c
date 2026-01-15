@@ -4,12 +4,12 @@
  * Copyright 2025 linliangjun
  */
 
-#include "bitmap.h"
-#include "bitops.h"
-#include "assert.h"
-#include "math.h"
-#include "string.h"
-#include "panic.h"
+#include "aurora/kernel/bitmap.h"
+#include "aurora/kernel/panic.h"
+#include "aurora/kernel/assert.h"
+#include "aurora/bitops.h"
+#include "aurora/math.h"
+#include "aurora/string.h"
 
 void bitmap_init(bitmap_t *bitmap, size_t total)
 {

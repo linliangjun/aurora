@@ -4,10 +4,10 @@
  * Copyright 2025 linliangjun
  */
 
-#include "idt.h"
-#include "assert.h"
-#include "kernel.h"
-#include "string.h"
+#include "aurora/kernel/idt.h"
+#include "aurora/kernel/assert.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/string.h"
 
 #define EXCEPTION_HANDLER(vector, name)                                                                                        \
     __attribute__((interrupt)) static void exception_handler_##vector(const interrupt_frame_t *frame)                          \

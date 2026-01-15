@@ -11,8 +11,8 @@
  * Copyright 2025 linliangjun
  */
 
-#include "boot/bios_call.h"
-#include "boot/boot.h"
+#include "aurora/boot/bios_call.h"
+#include "aurora/boot/boot.h"
 
 #define MAX_ATTEMPTS 3
 

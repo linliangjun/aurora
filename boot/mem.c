@@ -4,9 +4,9 @@
  * Copyright 2025 linliangjun
  */
 
-#include "boot/mem.h"
-#include "boot/bios_call.h"
-#include "string.h"
+#include "aurora/boot/mem.h"
+#include "aurora/boot/bios_call.h"
+#include "aurora/string.h"
 
 typedef struct
 {

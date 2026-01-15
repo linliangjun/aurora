@@ -4,13 +4,13 @@
  * Copyright 2025 linliangjun
  */
 
-#include "gdt.h"
-#include "assert.h"
-#include "kernel.h"
-#include "string.h"
-#include "bitmap.h"
-#include "math.h"
-#include "panic.h"
+#include "aurora/kernel/gdt.h"
+#include "aurora/kernel/assert.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/kernel/bitmap.h"
+#include "aurora/kernel/panic.h"
+#include "aurora/string.h"
+#include "aurora/math.h"
 
 /**
  * GDT 描述符

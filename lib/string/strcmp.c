@@ -2,7 +2,7 @@
  * Copyright 2026 linliangjun
  */
 
-#include "string.h"
+#include "aurora/string.h"
 
 i32 strcmp(const char *s1, const char *s2)
 {

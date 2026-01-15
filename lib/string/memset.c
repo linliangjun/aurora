@@ -2,7 +2,7 @@
  * Copyright 2025 linliangjun
  */
 
-#include "string.h"
+#include "aurora/string.h"
 
 void *memset(void *dest, u8 value, size_t n)
 {

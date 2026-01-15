@@ -2,7 +2,7 @@
  * Copyright 2025 linliangjun
  */
 
-#include "string.h"
+#include "aurora/string.h"
 
 size_t strlen(const char *str)
 {

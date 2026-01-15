@@ -4,10 +4,10 @@
  * Copyright 2026 linliangjun
  */
 
-#include "heap.h"
-#include "vmm.h"
-#include "kernel.h"
-#include "assert.h"
+#include "aurora/kernel/heap.h"
+#include "aurora/kernel/vmm.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/kernel/assert.h"
 
 typedef struct block_header {
     size_t size;               // 这个块的大小（包含 header 本身）

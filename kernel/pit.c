@@ -4,12 +4,12 @@
  * Copyright 2025 linliangjun
  */
 
-#include "pit.h"
-#include "io.h"
-#include "kernel.h"
-#include "pic.h"
-#include "printk.h"
-#include "task_manager.h"
+#include "aurora/kernel/pit.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/kernel/pic.h"
+#include "aurora/kernel/printk.h"
+#include "aurora/kernel/task_manager.h"
+#include "aurora/io.h"
 
 #define IRQ0 0
 #define PIT_CNT0_PORT 0x40

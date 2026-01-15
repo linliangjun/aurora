@@ -4,7 +4,7 @@
  * Copyright 2025 linliangjun
  */
 
-#include "kernel.h"
+#include "aurora/kernel/kernel.h"
 
     .global	    _start
 

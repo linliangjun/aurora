@@ -4,11 +4,11 @@
  * Copyright 2026 linliangjun
  */
 
-#include "ramfs.h"
-#include "types.h"
-#include "printk.h"
-#include "string.h"
-#include "math.h"
+#include "aurora/kernel/ramfs.h"
+#include "aurora/kernel/printk.h"
+#include "aurora/types.h"
+#include "aurora/string.h"
+#include "aurora/math.h"
 
 typedef struct {
     char name[100];     // 文件名

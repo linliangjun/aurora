@@ -4,8 +4,8 @@
  * Copyright 2026 linliangjun
  */
 
-#include "keymap.h"
-#include "ctype.h"
+#include "aurora/kernel/keymap.h"
+#include "aurora/ctype.h"
 
 // 键盘扫描码映射表 (US QWERTY)
 // 索引是 Make Code

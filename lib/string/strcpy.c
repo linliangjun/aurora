@@ -2,7 +2,7 @@
  * Copyright 2025 linliangjun
  */
 
-#include "string.h"
+#include "aurora/string.h"
 
 char *strcpy(char *dest, const char *src)
 {

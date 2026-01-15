@@ -2,7 +2,7 @@
  * Copyright 2026 linliangjun
  */
 
-#include "string.h"
+#include "aurora/string.h"
 
 char *strchr(const char *str, char ch)
 {

@@ -4,11 +4,11 @@
  * Copyright 2026 linliangjun
  */
 
-#include "keyboard.h"
-#include "io.h"
-#include "pic.h"
-#include "printk.h"
-#include "kernel.h"
+#include "aurora/kernel/keyboard.h"
+#include "aurora/io.h"
+#include "aurora/kernel/pic.h"
+#include "aurora/kernel/printk.h"
+#include "aurora/kernel/kernel.h"
 
 #define KEYBOARD_IRQ 1     // 键盘 IRQ 号
 #define KEYBOARD_PORT 0x60 // 键盘数据端口

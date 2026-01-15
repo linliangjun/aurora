@@ -4,7 +4,7 @@
  * Copyright 2025 linliangjun
  */
 
-#include "boot/boot.h"
+#include "aurora/boot/boot.h"
 
     .globl      stage2_entry
 

@@ -4,15 +4,15 @@
  * Copyright 2026 linliangjun
  */
 
-#include "shell.h"
-#include "keymap.h"
-#include "keyboard.h"
-#include "kernel.h"
-#include "tty.h"
-#include "ramfs.h"
-#include "string.h"
-#include "assert.h"
-#include "heap.h"
+#include "aurora/kernel/shell.h"
+#include "aurora/kernel/keymap.h"
+#include "aurora/kernel/keyboard.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/kernel/tty.h"
+#include "aurora/kernel/ramfs.h"
+#include "aurora/kernel/assert.h"
+#include "aurora/kernel/heap.h"
+#include "aurora/string.h"
 
 static char cwd[SHELL_CWD_BUFFER_SIZE] = "/";
 static char cmd_buf[SHELL_CMD_BUFFER_SIZE];

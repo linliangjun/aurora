@@ -4,8 +4,8 @@
  * Copyright 2025 linliangjun
  */
 
-#include "boot/boot.h"
-#include "seg.h"
+#include "aurora/boot/boot.h"
+#include "aurora/seg.h"
 
 #define CODE32_DESC_SELE SEG_DESC_SELE(1, 0, 0)
 #define DATA32_DESC_SELE SEG_DESC_SELE(2, 0, 0)

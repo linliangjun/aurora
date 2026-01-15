@@ -4,10 +4,10 @@
  * Copyright 2025 linliangjun
  */
 
-#include "disk.h"
-#include "boot/bios_call.h"
-#include "math.h"
-#include "string.h"
+#include "aurora/boot/disk.h"
+#include "aurora/boot/bios_call.h"
+#include "aurora/math.h"
+#include "aurora/string.h"
 
 #define SECTOR_COUNT_PER_READ 4 // 每次读取扇区数量
 

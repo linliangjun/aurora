@@ -4,10 +4,10 @@
  * Copyright 2025 linliangjun
  */
 
-#include "boot/boot_info.h"
-#include "boot/loader.h"
-#include "boot/mem.h"
-#include "tty.h"
+#include "aurora/boot/boot_info.h"
+#include "aurora/boot/loader.h"
+#include "aurora/boot/mem.h"
+#include "aurora/boot/tty.h"
 
 static mmap_t mmap[20];
 static boot_info_t boot_info = {.mmap = mmap};

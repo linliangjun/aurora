@@ -6,9 +6,9 @@
  * Copyright 2025 linliangjun
  */
 
-#include "tty.h"
-#include "io.h"
-#include "string.h"
+#include "aurora/kernel/tty.h"
+#include "aurora/io.h"
+#include "aurora/string.h"
 
 /* CGA 文本颜色 */
 typedef enum

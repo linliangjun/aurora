@@ -4,15 +4,14 @@
  * Copyright 2026 linliangjun
  */
 
-#include "syscall.h"
-#include "types.h"
+#include "stdio.h"
 
 /**
  * 用户任务入口
  */
 void user_task(void)
 {
-    sys_write("User task\n");
+    puts("User task\n");
     while (1)
         ;
 }

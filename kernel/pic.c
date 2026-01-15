@@ -4,10 +4,10 @@
  * Copyright 2024 linliangjun
  */
 
-#include "pic.h"
-#include "io.h"
-#include "kernel.h"
-#include "printk.h"
+#include "aurora/kernel/pic.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/kernel/printk.h"
+#include "aurora/io.h"
 
 #define PIC_MASTER_PORT_0 0x20
 #define PIC_MASTER_PORT_1 0x21

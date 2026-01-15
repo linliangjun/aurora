@@ -4,12 +4,12 @@
  * Copyright 2025 linliangjun
  */
 
-#include "task_manager.h"
-#include "gdt.h"
-#include "kernel.h"
-#include "heap.h"
-#include "string.h"
-#include "printk.h"
+#include "aurora/kernel/task_manager.h"
+#include "aurora/kernel/gdt.h"
+#include "aurora/kernel/kernel.h"
+#include "aurora/kernel/heap.h"
+#include "aurora/kernel/printk.h"
+#include "aurora/string.h"
 
 /**
  * TSS 结构体

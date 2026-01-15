@@ -4,9 +4,9 @@
  * Copyright 2025 linliangjun
  */
 
-#include "assert.h"
-#include "string.h"
-#include "tty.h"
+#include "aurora/kernel/assert.h"
+#include "aurora/kernel/tty.h"
+#include "aurora/string.h"
 
 void printk(const char *fmt, ...)
 {
