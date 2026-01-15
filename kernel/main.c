@@ -16,6 +16,7 @@
 #include "keyboard.h"
 #include "shell.h"
 #include "ramfs.h"
+#include "string.h"
 
 static void kernel_init(boot_info_t *boot_info)
 {
@@ -30,10 +31,19 @@ static void kernel_init(boot_info_t *boot_info)
     keyboard_init();
 }
 
+static void create_user_task(void)
+{
+    u8 code[] = {0xeb, 0xfe}; // 无限循环的机器码
+    void *entry_point = heap_malloc(sizeof(code), true);
+    memcpy(entry_point, code, sizeof(code));
+    task_spawn((uintptr_t)entry_point, true);
+}
+
 __attribute__((noreturn)) void main(boot_info_t *boot_info)
 {
     kernel_init(boot_info);
-    task_spawn((uintptr_t)shell_main);
+    create_user_task();
+    task_spawn((uintptr_t)shell_main, false);
     while (true)
         task_manager_schedule();
 }

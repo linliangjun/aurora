@@ -60,7 +60,7 @@ static void cmd_cat_handler(void)
             path_len += 1;
             require_separator = true;
         }
-        path = heap_kmalloc(path_len);
+        path = heap_malloc(path_len, false);
         strcpy(path, cwd);
         if (require_separator)
             strcat(path, "/");
@@ -81,7 +81,7 @@ static void cmd_cat_handler(void)
         if (remaining_size > 0)
         {
             size_t buf_size = MIN(SHELL_CAT_BUFFER_SIZE, remaining_size);
-            char *buf = heap_kmalloc(buf_size);
+            char *buf = heap_malloc(buf_size, false);
             while (remaining_size > 0)
             {
                 size_t read_size = ramfs_read(&file, buf, buf_size - 1);
@@ -89,11 +89,11 @@ static void cmd_cat_handler(void)
                 tty_write(buf);
                 remaining_size = file.size - file.offset;
             }
-            heap_kfree(buf);
+            heap_free(buf);
         }
     }
     if (clear_heap)
-        heap_kfree(path);
+        heap_free(path);
     tty_write("# ");
 }
 

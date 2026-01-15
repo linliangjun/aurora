@@ -17,20 +17,36 @@ typedef struct block_header {
 
 static const void *kheap;
 
+static const void *user_heap;
+
 void heap_init(void)
 {
-    size_t page_index = vmm_allocate_kernel_pages(KERNEL_HEAP_PAGE_COUNT);
+    // 分配内核堆
+    size_t page_index = vmm_allocate_pages(KERNEL_HEAP_PAGE_COUNT, false);
     kheap = (void *)PAGE_ADDR(page_index);
     block_header_t *header = (block_header_t *)kheap;
     header->is_free = true;
     header->size = KERNEL_HEAP_PAGE_COUNT * PAGE_SIZE;
     header->next = 0;
-    PR_INFO("Heap initialized, addr: %#x, size: %u\n", kheap, header->size);
+
+    PR_INFO("Kernel heap initialized at %#x, size %#uKiB\n", kheap, DIV_ROUND_UP(KERNEL_HEAP_PAGE_COUNT * PAGE_SIZE, 1024));
+
+    // 分配用户堆
+    page_index = vmm_allocate_pages(USER_HEAP_PAGE_COUNT, true);
+    user_heap = (void *)PAGE_ADDR(page_index);
+    header = (block_header_t *)user_heap;
+    header->is_free = true;
+    header->size = USER_HEAP_PAGE_COUNT * PAGE_SIZE;
+    header->next = 0;
+
+    PR_INFO("User heap initialized at %#x, size %#uKiB\n", user_heap, DIV_ROUND_UP(USER_HEAP_PAGE_COUNT * PAGE_SIZE, 1024));
+    PR_INFO("Heap initialized\n");
 }
 
-void *heap_kmalloc(size_t size)
+void *heap_malloc(size_t size, bool user)
 {
-    block_header_t *header = (block_header_t *)kheap;
+    const void *heap = user ? user_heap : kheap;
+    block_header_t *header = (block_header_t *)heap;
     bool found = false;
     do
     {
@@ -44,7 +60,7 @@ void *heap_kmalloc(size_t size)
         else
             break;
     } while (!found);
-    ASSERT(found, "Kernel heap out of memory");
+    ASSERT(found, "Heap out of memory");
 
     size_t old_size = header->size;
     size_t new_size = sizeof(block_header_t) + size;
@@ -65,11 +81,8 @@ void *heap_kmalloc(size_t size)
     return (void *)(header + 1);
 }
 
-void heap_kfree(void *ptr)
+void heap_free(void *ptr)
 {
-    ASSERT((uintptr_t)ptr >= (uintptr_t)kheap
-        && (uintptr_t)ptr < (uintptr_t)kheap + KERNEL_HEAP_PAGE_COUNT * PAGE_SIZE,
-        "Invalid kernel heap pointer");
     block_header_t *header = (block_header_t *)ptr - 1;
     header->is_free = true;
 

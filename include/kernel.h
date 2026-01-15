@@ -33,6 +33,9 @@
 #define PMM_MAX_PAGE_COUNT ((PMM_MAX_SIZE) / PAGE_SIZE) // 最大支持的物理页数量
 #define KERNEL_PAGE_MAX_COUNT 1024                      // 内核最大页数量
 
+#define USER_PAGE_MAX_COUNT 2048 // 用户态最大页数量
+#define USER_PAGE_START 1024     // 用户态虚拟内存起始页索引
+
 #ifdef __ASSEMBLY__
 
 #define CODE_SEG_SELE SEG_DESC_SELE(1, 0, 0)
@@ -42,6 +45,8 @@
 
 #define CODE_SEG_SELE (seg_desc_sele_t){.rpl = 0, .ti = 0, .index = 1}
 #define DATA_SEG_SELE (seg_desc_sele_t){.rpl = 0, .ti = 0, .index = 2}
+#define USER_CODE_SEG_SELE (seg_desc_sele_t){.rpl = 3, .ti = 0, .index = 3}
+#define USER_DATA_SEG_SELE (seg_desc_sele_t){.rpl = 3, .ti = 0, .index = 4}
 
 /* 内核起始和结束位置 */
 extern u8 __hhk_init_bss_start[]; // hhk_init_bss 起始地址
@@ -64,6 +69,7 @@ extern u8 __kernel_phys_end[];   // 内核物理结束地址（不包含）
 #define KERNEL_PAGE_START PAGE_INDEX((uintptr_t)__kernel_start)           // 内核虚拟起始页索引
 
 #define KERNEL_HEAP_PAGE_COUNT 512 // 内核堆页数量
+#define USER_HEAP_PAGE_COUNT 1024 // 用户堆页数量
 
 #define KEYBOARD_BUFFER_SIZE 256 // 键盘缓冲区大小
 

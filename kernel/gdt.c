@@ -33,6 +33,8 @@ void gdt_init(void)
 
     gdt_set_desc(CODE_SEG_SELE.index, &SEG_DESC(0, 0xfffff, SEG_DESC_ACCESS(1, 0, 1, SEG_DESC_TYPE_CODE), SEG_DESC_FLAGS(1, 1, 0)));
     gdt_set_desc(DATA_SEG_SELE.index, &SEG_DESC(0, 0xfffff, SEG_DESC_ACCESS(1, 0, 1, SEG_DESC_TYPE_WRITEABLE_DATA), SEG_DESC_FLAGS(1, 1, 0)));
+    gdt_set_desc(USER_CODE_SEG_SELE.index, &SEG_DESC(0, 0xfffff, SEG_DESC_ACCESS(1, 3, 1, SEG_DESC_TYPE_CODE), SEG_DESC_FLAGS(1, 1, 0)));
+    gdt_set_desc(USER_DATA_SEG_SELE.index, &SEG_DESC(0, 0xfffff, SEG_DESC_ACCESS(1, 3, 1, SEG_DESC_TYPE_WRITEABLE_DATA), SEG_DESC_FLAGS(1, 1, 0)));
     gdt_desc_t gdt_desc = {.lim = sizeof(gdt) - 1, .base = (uintptr_t)gdt};
     __asm__ __volatile__("lgdt %0" : : "m"(gdt_desc));
     PR_INFO("Load GDT, base: %#x, limit: %#x\n", gdt_desc.base, gdt_desc.lim);

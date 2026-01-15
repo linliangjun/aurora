@@ -18,12 +18,19 @@
 static u8 vmm_kernel_data[DIV_ROUND_UP(KERNEL_PAGE_MAX_COUNT, 8)];
 static bitmap_t vmm_kernel_bitmap = {.data = vmm_kernel_data};
 
+// 用户虚拟内存位图
+static u8 vmm_user_data[DIV_ROUND_UP(USER_PAGE_MAX_COUNT, 8)];
+static bitmap_t vmm_user_bitmap = {.data = vmm_user_data};
+
 void vmm_init(void)
 {
     ASSERT(KERNEL_PAGE_MAX_COUNT >= KERNEL_PAGE_COUNT, "Kernel size too large");
     bitmap_init(&vmm_kernel_bitmap, KERNEL_PAGE_MAX_COUNT);
     for (size_t i = 0; i < KERNEL_PAGE_COUNT; i++)
         bitmap_allocate(&vmm_kernel_bitmap, i);
+
+    bitmap_init(&vmm_user_bitmap, USER_PAGE_MAX_COUNT);
+
     PR_INFO("VMM initialized\n");
 }
 
@@ -41,7 +48,7 @@ static void bind_page(size_t virtual_page_index, size_t phys_page_index, bool us
         size_t pte_page_index = pmm_allocate_page();
         pde->frame = pte_page_index;
         pde->present = true;
-        pde->user = user;
+        pde->user = true;
         pde->write = true;
         memset((void *)PTE(pde_index, 0), 0, PAGE_SIZE);
     }
@@ -49,18 +56,19 @@ static void bind_page(size_t virtual_page_index, size_t phys_page_index, bool us
     pte_t *pte = (pte_t *)PTE(pde_index, pte_index);
     pte->present = true;
     pte->write = true;
-    pte->user = false;
+    pte->user = user;
     pte->frame = phys_page_index;
     invlpg(PAGE_ADDR(virtual_page_index));
 }
 
-size_t vmm_allocate_kernel_pages(size_t n)
+size_t vmm_allocate_pages(size_t n, bool user)
 {
-    size_t virtual_page_index = bitmap_allocate_n(&vmm_kernel_bitmap, n) + KERNEL_PAGE_START;
+    size_t virtual_page_index = user ? bitmap_allocate_n(&vmm_user_bitmap, n) + USER_PAGE_START
+                                    : bitmap_allocate_n(&vmm_kernel_bitmap, n) + KERNEL_PAGE_START;
     for (size_t i = 0; i < n; i++)
     {
         size_t phys_page_index = pmm_allocate_page();
-        bind_page(virtual_page_index + i, phys_page_index, false);
+        bind_page(virtual_page_index + i, phys_page_index, user);
     }
     return virtual_page_index;
 }
@@ -85,9 +93,12 @@ static void unbind_page(size_t virtual_page_index)
     invlpg(PAGE_ADDR(virtual_page_index));
 }
 
-void vmm_free_kernel_pages(size_t page_index, size_t n)
+void vmm_free_pages(size_t page_index, size_t n)
 {
-    bitmap_free_n(&vmm_kernel_bitmap, page_index - KERNEL_PAGE_START, n);
+    if (page_index >= KERNEL_PAGE_START)
+        bitmap_free_n(&vmm_kernel_bitmap, page_index - KERNEL_PAGE_START, n);
+    else
+        bitmap_free_n(&vmm_user_bitmap, page_index - USER_PAGE_START, n);
     for (size_t i = 0; i < n; i++)
         unbind_page(page_index + i);
 }

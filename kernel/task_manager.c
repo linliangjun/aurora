@@ -80,7 +80,7 @@ static u32 get_cr3(void)
 void task_manager_init(void)
 {
     // 创建内核 TSS
-    kernel_task = heap_kmalloc(sizeof(task_t));
+    kernel_task = heap_malloc(sizeof(task_t), false);
     memset(kernel_task, 0, sizeof(task_t));
 
     kernel_task->id = task_count++;
@@ -97,9 +97,9 @@ void task_manager_init(void)
     PR_INFO("Task Manager Initialized\n");
 }
 
-size_t task_spawn(uintptr_t entry_point)
+size_t task_spawn(uintptr_t entry_point, bool user)
 {
-    task_t *task = heap_kmalloc(sizeof(task_t));
+    task_t *task = heap_malloc(sizeof(task_t), false);
     memset(task, 0, sizeof(task_t));
 
     task->id = task_count++;
@@ -108,16 +108,31 @@ size_t task_spawn(uintptr_t entry_point)
     tss_t *tss = &task->tss;
     tss->cr3 = get_cr3();
 
-    // 分配栈（4 KiB）
-    tss->esp = tss->esp0 = (uintptr_t)heap_kmalloc(4096) + 4096;
+    // 分配内核栈（4 KiB）
+    tss->esp = tss->esp0 = (uintptr_t)heap_malloc(4096, false) + 4096;
     tss->ss = tss->ss0 = DATA_SEG_SELE;
 
     tss->cs = CODE_SEG_SELE;
-    tss->eip = entry_point;
     tss->ds = DATA_SEG_SELE;
     tss->es = DATA_SEG_SELE;
     tss->fs = DATA_SEG_SELE;
     tss->gs = DATA_SEG_SELE;
+
+    if (user)
+    {
+        // 分配用户栈（4 KiB）
+        tss->esp = (uintptr_t)heap_malloc(4096, true) + 4096;
+        tss->ss = USER_DATA_SEG_SELE;
+
+        tss->cs = USER_CODE_SEG_SELE;
+        tss->ds = USER_DATA_SEG_SELE;
+        tss->es = USER_DATA_SEG_SELE;
+        tss->fs = USER_DATA_SEG_SELE;
+        tss->gs = USER_DATA_SEG_SELE;
+    }
+
+    tss->eip = entry_point;
+
     tss->eflags = 0x202;
 
     // 设置 GDT 描述符

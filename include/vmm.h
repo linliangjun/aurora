@@ -54,19 +54,20 @@ typedef struct __attribute__((packed))
 void vmm_init(void);
 
 /**
- * 分配多页内核虚拟内存
+ * 分配多页虚拟内存
  *
  * @param n 要分配的页数
- * @return 起始内核虚拟内存页索引
+ * @param user 是否为用户态页，true：用户态；false：内核态
+ * @return 起始虚拟内存页索引
  */
-size_t vmm_allocate_kernel_pages(size_t n);
+size_t vmm_allocate_pages(size_t n, bool user);
 
 /**
- * 回收多页内核虚拟内存
+ * 回收多页虚拟内存
  *
- * @param page_index 起始内核虚拟内存页索引
+ * @param page_index 起始虚拟内存页索引
  * @param n 要回收的页数
  */
-void vmm_free_kernel_pages(size_t page_index, size_t n);
+void vmm_free_pages(size_t page_index, size_t n);
 
 #endif // __VMM_H

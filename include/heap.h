@@ -15,18 +15,19 @@
 void heap_init(void);
 
 /**
- * 分配内核堆
+ * 分配堆
  *
  * @param size 堆大小（字节）
+ * @param user 是否为用户态堆，true：用户态；false：内核态
  * @return 分配的堆指针
  */
-void *heap_kmalloc(size_t size);
+void *heap_malloc(size_t size, bool user);
 
 /**
- * 释放内核堆
+ * 释放堆
  *
  * @param ptr 堆指针
  */
-void heap_kfree(void *ptr);
+void heap_free(void *ptr);
 
 #endif
