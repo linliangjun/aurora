@@ -15,7 +15,7 @@
 #define KERNEL_STACK_SIZE (16 * 1024)
 
 #define GDT_ENTRY_COUNT 128 // GDT 条目数量
-#define IDT_ENTRY_COUNT 128 // IDT 条目数量
+#define IDT_ENTRY_COUNT 255 // IDT 条目数量
 
 /* IRQ 起始向量号，必须是 8 的整倍数，即：低三位都是 0 */
 #define PIC_MASTER_IRQ_VECTOR 32                         // 主片 IRQ 起始向量号
