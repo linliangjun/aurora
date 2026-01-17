@@ -22,3 +22,14 @@ void sys_write(const char *str)
         : "r"(str)
         : "%eax", "%ecx");
 }
+
+int printf(const char *format, ...)
+{
+    char buf[1024];
+    va_list args;
+    va_start(args, format);
+    int size = vsprintf(buf, format, args);
+    va_end(args);
+    sys_write(buf);
+    return size;
+}

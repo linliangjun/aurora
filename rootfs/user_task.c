@@ -5,13 +5,14 @@
  */
 
 #include "stdio.h"
+#include "stdbool.h"
 
 /**
  * 用户任务入口
  */
 void user_task(void)
 {
-    puts("User task\n");
-    while (1)
+    printf("Hello, %s\n", "world");
+    while (true)
         ;
 }
